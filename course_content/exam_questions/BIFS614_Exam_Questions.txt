@@ -1,0 +1,66 @@
+COURSE: BIFS 614- Data Structures and Algorithms
+DOCUMENT TYPE: Exam Questions
+
+Possible Proctor Mode Exam Questions:
+
+Proctor Exam Instructions: Choose a combination of questions that total 100 points from this list of exam questions.
+
+Question #1 (5 points):
+Define kmer. Be sure to include TWO examples, with different values for “k”.
+
+Question #2 (10 points):
+What kind of data does a VCF file contain? How is the data formatted? How is it generated? Be sure to list any required fields that are standard to the format.
+
+Question #3 (10 points):
+Phylogenetic trees (especially parsimony based trees) are an example of an NP-Complete problem. What does this mean? How can we solve such a problem? Be sure to name TWO specific techniques from the lecture notes.
+
+Question #4 (10 points):
+What is BigO? Name factors that impact it, as well as factors that do not impact it.
+
+Question #5 (20 points):
+Describe the differences between TSV, CSV, and Excel. Provide examples of TSV and CSV. Be sure to discuss things like formatting and required fields. Which would you use for bioinformatics data and why?
+
+Question #6 (20 points):
+How is a SAM file generated? How is a BAM file generated? What role does BAI play in all of this? And what are SAM and BAM used for?
+
+Question #7 (10 points):
+Describe the format and typical contents of ONE of the following file formats: Genbank, VCF, FASTQ.
+
+Question #8 (10 points):
+Describe what sorts of factors can impact an algorithms BigO.
+
+Question #9 (10 points):
+What are the best editors for bioinformatics data?
+
+Question #10 (10 points):
+Describe how a hash table is constructed and what it may look like.
+
+Question #11 (10 points):
+What are the benefits of keyword and suffix trees? What are the drawbacks?
+
+Question #12 (10 points):
+Describe what a heuristic algorithm is.
+
+Question #13 (10 points):
+Describe how jumbling can be used to lower the likelihood of running into a local optima.
+
+Question #14 (5 points):
+Describe how you would create a folder, enter it, and create a new file in Linux using the command line.
+
+Question #15 (20 points):
+Describe what grep, awk, and sed to and how you can use them with bioinformatics data.
+
+Question #16 (10 points):
+What is the primary difference between clustering and data reduction?
+
+Question #17 (10 points):
+Describe the similarities and differences between PCA and LDA.
+
+Question #18 (10 points):
+How can K-mers be used to identify the species present in a mixed sample? How accurate is this typically?
+
+Question #19 (10 points):
+Describe the basic structure of a neural network.
+
+Question #20 (10 points):
+What is a relational database and why is it useful in bioinformatics?
