@@ -1,0 +1,97 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 9
+TITLE: Clustering & Dimensionality Reduction
+
+CLUSTERING
+
+Just as Genomics is the study of an entire genome – meaning the sequence of the genome, including annotations such as gene products (identified both through wet-lab work and computationally), promoters, SNPs, etc., Proteomics is the analysis of the genome in terms of expressed products – the transcripts that are actually produced by the genome. This is significant in that while the genome represents potential expressed products, the proteome is in fact all of the actual proteins and RNAs (not all of which code for proteins, recall) that are made in any given tissue at any given time. This gives us a very powerful way of comparing tissues and conditions (e.g. control vs disease states) in real time. Unfortunately, a full proteomic analysis means looking at approximately 50-60 thousand products (if you are using RNAseq data); a bit fewer (20,000 total) if you are looking only at proteins.
+
+One of the more common types of experiment that generates proteomics data is a SAGE analysis (Serial Analysis of Gene Expression), which results in a snapshot of all of the expressed mRNA's isolated from the target tissues on a microarray. A microarray is a small "chip" or slide that contains many thousands of "spots", each of which represents a different gene product. By probing the chip with a complex of probes (the biology is fascinating and I will not go into it in depth here, but feel free to dig deeper on your own if you like) and scanning it to detect signals, the expression levels of every gene for a given tissue/condition can be determined. RNAseq is a more modern PCR-based next- generation sequencing approach that is starting to replace SAGE and other microarray- based analysis, but the end result is the same – thousands (up to 60 thousand!) of different expression levels for unique gene products.
+
+It's important to keep in mind that the expression level of each gene product will differ from tissue to tissue and time to time - the amount of information, therefore, is overwhelming – and we need ways of viewing and analyzing such large data sets effectively. The raw data is typically expressed in a matrix (e.g. an Excel spreadsheet), but looking at several rows (possibly hundreds) and 30-60 thousand columns isn't something we can do without computational assistance.
+
+There are several approaches to doing this, and the first one we're going to focus on this week is Clustering. Clustering is the process of grouping similar data points to reduce the overall complexity of the data. A simple approach would be to plot each data point in an N-dimensional space (where N may be as simple as 2 – gene and expression – but may be 3 if you are looking at a time series, or more if you are adding additional variables) and computing a distance matrix between each possible pair of points. Then, genes with very small distances can be clustered (grouped!) together, since they may be functionally related (e.g. co-regulated, expressed at the same times, at the same levels).
+
+Yes, this is a big assumption to make. In practice the more dimensions you add to the data, the more likely that this assumption is true. More advanced techniques like multivariate correlation analysis (Google "StickWRLD" for an example) may be able to more accurately predict related genes, but clustering does tend to provide useful data...
+
+Two key principles in clustering are homogeneity (the elements within a cluster should be close to one another) and separation (elements in different clusters, and clusters themselves, should be further apart from each other).
+
+For example – given these data points, the clusters should be easy to identify, as both the homogeneity and separation are good:
+
+From these data you would (probably) decide that these are the clusters:
+
+And you'd be correct!
+
+There are essentially three different strategies when it comes to clustering: Agglomerative, Divisive, and Hierarchical:
+
+    1. Agglomerative: Starts with every element in it's own cluster and iteratively joins clusters together.
+
+    2. Divisive: Starts with all data in one big cluster and iteratively divides it into smaller clusters
+
+    3. Hierarchical: Organizes elements into a tree where the leaves represent genes and the length of the paths between leaves is proportional to the distances (not sequence distances but based on the N-dimensional plot!) between them. Similar genes lie within the same subtree.
+
+Of these, Hierarchical clustering is the most commonly used. Hierarchical clustering is similar to the techniques we use for computing evolutionary histories:
+
+    1. Start with n clusters, where n is equal to the total number of elements (data points). At this point each OTU (operational taxonomic unit) is it's own cluster.
+
+    2. Compute the distance between all clusters.
+
+    3. While there are more than one cluster, find the two closest clusters and merge them into a new cluster containing all of the elements of the two.
+
+    4. Repeat steps 2 and 3
+
+Obviously you do not want to end up with one large cluster, which is the logical endpoint of a hierarchical clustering – at some point you have to stop adding clusters to one another. This threshold is typically a default.
+
+Hierarchical clustering is very computationally expensive even with relatively small data sets, and if a data point is misclustered early on, the error will remain and not be corrected.
+
+Another common method of clustering is K-Means clustering. In K-Means clustering, the data is split in k random clusters. Then the centroid (the center of a given cluster) is computed for each cluster. Then each data point is assigned to the closest centroid and the process is repeated until data cannot be reassigned better than it already has been. Let's start with a simple example where K is set at 2:
+
+The red and blue "x" symbols are the initial centroids if you divide the data along the diagonal:
+
+Now recomputed the cluster centers based on this division:
+
+The "x"s are hard to see but they are there – now let's reassign data points based on proximity to these new centroids – notice that colors change to reflect the new assignment:
+
+As you can see even with an arbitrary centroid placement you can rapidly begin to correctly cluster the data points! This example only displays two iterations; in the real world you may repeat this as needed until there are no changes.
+
+This iterative processing ensures that you do not get trapped in a localized optimum, and is very memory and CPU efficient – distinct advantages over hierarchical clustering! The disadvantage to K-means clustering is that it is very sensitive to the initial parameters – if the centroid initialization is done poorly the clustering may take many more iterations, and may even result in a poor clustering. To compensate for this, it's best to use several different initializations and chose the best outcome.
+
+DIMENSIONALITY REDUCTION
+
+While clustering takes all of the data points and groups them based on some common criteria, there is another way to deal with very large data sets:  dimensionality reduction.  Dimensionality reduction is the process of transforming data from a higher-dimensional space to a lower-dimensional space, while retaining the meaningful properties of the original data.  One way to think of this is to picture a data set that might be meaningful when plotted in 3 dimensions or more – how can we represent this in a simple two-dimensional graph?  By reducing the overall dimensions of a dataset we make the data more tractable both to computational analysis and to human visual analysis.
+
+While there are many different ways to reduce dimensionality, we are going to focus on two techniques that apply a linear transformation to the original data:  PCA and LDA.
+
+PCA:  PRINCIPLE COMPONENTS ANALYSIS
+
+PCA is an unsupervised technique that ignores any class labels that may be assigned to the data and finds the “direction” or vector of maximum variance – identifying the “principle components” (the axes of the largest variance) of the data.  Essentially PCA gives you a number of axes where the first axis is responsible for the largest amount of variance, the second axis is responsible for the next largest amount, and so on.  By reducing the data down in this fashion, the first two (or three) axes can be plotted, thus representing the majority of the variance.  As an additional benefit, this sort of data reduction can be used prior to training a neural network (we’ll learn more about that later when we talk about machine learning) to make the resulting model more tractable computationally.
+
+There are six basic steps to performing a PCA analysis:
+
+    1. Compute the mean vector (µ) for your data
+    2. Subtract mean from the given data.
+    3. Calculate the covariance matrix.
+    4. Calculate the eigen vectors and eigen values of the covariance matrix.
+    5. Choose components and form a feature vector.
+    6. Derive the new data set.
+
+Let’s walk through a simple example of a dataset with just two variables, x1 and x2, and 12 data points.  Recall that in “real world” examples, you would be dealing with multiple variables, and the actual mathematical analysis would involve many more dimensions than are shown below:
+
+The largest amount of variance in the display above can be represented by drawing a line that splits the overall lengthwise through the largest dimension:
+
+To reduce this two-dimensional dataset to a one-dimensional dataset (the simplest example, again), we would collapse the data onto that line, which is the first principal component:
+
+Which reduces to this:
+
+We have lost some of the original information through this reduction, but we have retained the most important axis of variance.
+
+Now let’s capture the second principal component from this same data set.  Ideally this will be orthogonal to the first component, doing our best to capture the variance in the data that was not captured by the first component.  So in our simple two-dimensional example, that would look like this:
+
+As you can see, the two principal components are perpendicular to each other, and capture independent elements of the dataset.  To do the full transform we would collapse both and create the new data set.
+
+Since this is already a two-dimensional data set, performing a PCA and projecting the original dataset onto the first two principal components would not result in a loss of data (since we are transforming from a two-dimensional dataset to a new two-dimensional dataset).  Instead, we would be merely rotating the data to use new dimensions.  You get the idea, however – with large multidimensional (multivariate) data, you can reduce multiple starting dimensions (which may be equal to the total number of variables) down to their principle components and plot whatever number of axes is convenient (e.g. two or three).  In general, the data will tend to follow an 80/20 rule, meaning that the majority of the variance will be explained by a very small number of principal components.  When you actually perform a PCA analysis, the software will tell you how much variance is explained by each component – and the number of Principal Components will always be smaller than the number of attributes/variables in the original data set.
+
+LDA:  LINEAR DISCRIMINANT ANALYSIS
+
+While PCA is unsupervised and ignores class labels, LDA instead explicitly uses the class labels to attempt to model the data.  This requires that the categorical groupings are known for each point in the dataset.  LDA analysis then uses those classifications to attempt to identify the variables most responsible for the variance in the data.  For example, my lab had a series of patients (n~100) from which we isolated proteins which were identified by mass spectroscopy.  We could classify each patient to a group (e.g. Control, Severe disease, Mild disease).  The LDA analysis we performed used those groupings to look for the proteins that most strongly contributed to the variance seen between the groups.  This is similar to a PCA in terms of variance detection, but dissimilar in that the groupings are assigned prior to analysis – which is what makes LDA a supervised form of analysis.  Like PCA, the LDA outputs axes which can then be plotted, reducing the dimensionality of the data to a human readable form.  There is a drawback to LDA, however, in that the number of resulting axes will always be N-1, where N is the original number of dimensions in the dataset.  So if you are looking at a bimodal dataset (e.g. Malignant vs Benign cancer tissue), LDA will produce a value, but not something that is plottable the way a PCA analysis is.  With greater than 2 dimensions, however, LDA can be a very powerful additional analysis to include.

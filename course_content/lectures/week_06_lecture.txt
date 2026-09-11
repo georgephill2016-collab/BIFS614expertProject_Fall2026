@@ -1,0 +1,332 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 6
+TITLE: Troubleshooting Code & Data
+
+During Midterm week we are going to change things up a bit and talk about something that’s actually very hard to talk about – troubleshooting.  The reason it’s hard to talk about is that there’s no magic formula or method to apply other than persistence – and paying attention to all of the information you have.  It’s something you really learn by doing, rather than by reading about it – but since you will need these skills later on in this class (and pretty much for the rest of your life), I’m going to take a stab at helping you figure it out.
+
+We can break this topic down into several categories, each of which will have its own delights:  hardware, code, and data.  For purposes of this class, you’ll have to troubleshoot code and data, but it’s easier to begin with something that you all have experience with – hardware.
+
+Troubleshooting Hardware
+
+Let’s start with a ridiculously easy example – lightbulbs.  You’ve all had this happen:  a lightbulb doesn’t come on when you flip the light switch.  There are many things that could be wrong – maybe the power is out, maybe the switch is broken, maybe the wiring is bad – maybe it’s even the bulb.  Subconsciously we do a lot of troubleshooting in our brains:  if the power is out, then all the lights will be out, so that’s easy to rule out.  We almost always flip the switch several times, but that just confirms that something is broken.  The next easiest thing to test is actually replacing the bulb – and if we do that and the light comes back on, then we’re done.  But what if it doesn’t?  We have to look deeper.  Is the breaker thrown for that circuit?  We can easily check the breaker box and see.  If power is indeed on to the circuit, and the light doesn’t come on, and we’ve already changed the bulb, that leaves the wiring or the switch.
+
+Most of us stop there, but an electrician will next check if there is really power coming to the switch by using a multimeter.  If there is power to the room (breaker box), a working bulb (because we checked and maybe even replaced it), and power to the switch, then we know it’s the switch.  Simple, right?
+
+Troubleshooting is almost always a matter of first figuring out what could be wrong, then eliminating each item one at a time – usually in the order of “most obvious”, but sometimes also by looking at “easiest to check”.  Let’s walk through another example – one that we have also all experienced:  a computer that doesn’t boot up.  We’re going to use a desktop computer as an example since it’s something that is far easier to fix/troubleshoot than a laptop.
+
+Let’s imagine you are sitting at your desk and you push the power button on your computer and nothing happens.  What are the first things we check?  What are the obvious problems that might be causing the computer not to turn on?
+
+    1. Not plugged in
+    2. Not powered on at power supply
+    3. Monitor not plugged in
+
+These are the easiest ones to check – you can literally just look at the computer and the outlet and see if it’s plugged in.  You can also check the switch at the back of the power supply and make sure it’s still in the ON position.  Assuming that those all check out, what would be our next steps?
+
+    4. When you push the button, does the monitor come on and go to the BIOS screen?
+
+If this happens you know that the power situation is fine and in fact the motherboard/CPU are fine.  This leaves you with something wrong with the software – and we’ll skip that for now…let’s assume the monitor doesn’t light up:
+
+    5. Are any of the lights inside the computer on?
+
+There are usually little indicator lights on the motherboard that will light up during the POST process (Power On Start Tests).  If these lights come on, then you know that the motherboard is getting power – so at least it’s not your power supply.
+
+    6. Do you need to replace the BIOS battery?
+
+The only way to check really is to replace it, unless you have a voltmeter.  But often computers won’t start up if this battery is really old/dead.  If this doesn’t do it, then:
+
+    7. Something is very badly wrong with the motherboard, CPU, or RAM.
+
+There are steps to take to check this as well – but we’re getting a bit beyond what we need to for purposes of this lecture.  And while what we’ve gone over is by no means an extensive list, these are some of the simple steps you can take to help keep the Geek Squad™ out of your house as long as possible.
+
+Let’s move on to something that you are more likely to run into during the course of this class – troubleshooting code by creating and troubleshooting a simple R script.
+
+Troubleshooting Code
+
+One of the reasons we use modern Integrated Development Environments (IDE’s) is because they do a lot of things to help us write better code – things like showing us the current values and types of variables (which is far more useful than it sounds – if you need your data to be cast as an integer and the software read it in as characters, well, know what the problem is puts you halfway towards solving it), autocomplete to help avoid typos, and debugging that shows where something is just plain broken (like a missing library, bad syntax, etc).  In this lecture we’re going to focus on R code in RStudio, but any good IDE will help you with these problems – e.g. PyCHARM or Spyder for Python, or Intellij’s IDEA for java.
+
+Let’s start by opening up RStudio.  Create a new R script from the FILE menu.
+
+I always like to start my scripts with some basic information in comment lines – you can change these to suit you:
+
+    # R Script for Sequence Download & Comparison
+    # Dr. R. Wolfgang Rumpf
+    # November 2022
+    # This script gives you a quick and easy introduction to some simple sequence
+    # tools available for use in R.  This is by no means a comprehensive list!
+
+Since this is comment code, we don’t have to worry about running it!  Now let’s make sure that we have installed the packages that we know we’ll be using for this exercise – we’ll need a few – seqinr, ape, and the msa library from Bioconductor.  The first two are installed using the standard technique for R:
+
+    # First let's install any packages we need if we don't already have them
+    if (!require("seqinr")) install.packages("seqinr")
+    if (!require("ape")) install.packages("ape")
+
+Let’s go ahead and run these lines.  The RStudio IDE makes it easy to run code line by line; simply put your cursor at the top of the code and hit the RUN button that’s towards the middle right of the script pane.
+
+Your code is executed line by line if you keep pressing the RUN button, and any results or information are printed out in the CONSOLE pane at the bottom left.
+
+Bioconductor is a little different – you have to install the Bioconductor installer, then install packages using that:
+
+    # Biostrings (from Bioconductor) is a bit different to install:
+    if (!require("BiocManager", quietly = TRUE))
+      install.packages("BiocManager")
+    BiocManager::install(version = "3.16")
+    BiocManager::install("msa")
+
+Running that will give you a lot of information – and if you have already installed Bioconductor previously you may have to answer a few questions regarding updating existing packages in the console pane.
+
+I just entered “a” for all (don’t use the quotes!) and let it update.
+
+Now that the packages are installed, let’s put some code in the script to load them into memory for the current script:
+
+    # Load all required libraries
+    library(sequinr)
+    library(ape)
+    library(Biostrings) # from Bioconductor!
+    library(msa)
+
+Let’s execute that using the RUN button.  In fact, let’s highlight all of the lines we want to run using our mouse (click and drag) and run them all at once.
+
+Executing this code gives us an ERROR message in the console!
+
+It’s always a good idea to check the console output when you are executing code for the first time – and this is exactly why.  Reading the error message tells us that there is an error in library sequinr.  Why would that be – didn’t we install seqinr?  If you look carefully at the code you’ll see that we did install seqinr but we tried to load sequinr – our first bug, squashed already!  Let’s change that line to say:
+
+    library(seqinr)
+
+And if we run that block now, it executes perfectly!
+
+So rule #1 for troubleshooting:  execute your code line-by-line in the IDE and check for error messages.  When you see one, read it carefully and see if you can figure out what went wrong.
+
+RStudio has a nice feature (that most other IDEs have as well) – if you highlight a term (maybe a variable name or a library), it will show you wherever else you have used that term.  That’s a great way to make sure your variable names are correct – or your libraries.  Double-click on the (now fixed) line for loading the seqinr library and you’ll see that the term seqinr is boxed in the lines up above where you told RStudio to load it:
+
+CODE:
+
+    # First let's install any packages we need if we don't already have them
+    if (!require("seqinr")) install.packages("seqinr")
+    if (!require("ape")) install.packages("ape")
+
+    # Biostrings (from Bioconductor) is a bit different to install:
+    if (!require("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+    BiocManager::install(version = "3.16")
+    BiocManager::install("msa")
+
+    # Load all required libraries
+    library(seqinr)
+    library(ape)
+    library(Biostrings) # from Bioconductor!
+    library(msa)
+
+Now we can see that the library we load is indeed the library we installed!
+
+Let’s add a few more lines of code – these will use the ape library to download GenBank sequences as storm them as binary variables.  Go ahead and run these lines after you add them:
+
+    # Let's load 3 sequences by accession number using ape - this creates binary
+    # sequence representations
+    SAG6220_bin <- read.GenBank("U22939.1", as.character = TRUE)
+    ATCC30963_bin <- read.GenBank("U22938.1", as.character = TRUE)
+    Cdysosmos_bin <- read.GenBank("U13985.1", as.character = TRUE)
+
+In addition to looking at the CONSOLE to see if everything ran fine, you should also be able to look at the ENVIRONMENT tab (top right) and see that three variables have been defined, one for each sequence.
+
+We need to convert these binary sequences to a more accessible form, so we’ll take the first part of the binary (the sequence part) and put that in a new variable by adding and running these lines:
+
+    # Convert to simple sequences for easier processing
+    SAG6220_seq <- SAG6220_bin[[1]]
+    ATCC30963_seq <- ATCC30963_bin[[1]]
+    Cdysosmos_seq <- Cdysosmos_bin[[1]]
+
+You should now see 3 new variables in the VALUES section of the ENVIRONMENT tab.
+
+Now let’s do some basic sequence analytics.  We could do this in the script, but we’re just getting some descriptive information, so let’s use the console instead.  You can type commands directly in the console – try typing each of the non-commented lines into the console and running it by simply pressing RETURN.  There are errors in each line of code below, see if you can figure them out:
+
+    # sequence length
+    SAG6220_length <- lenth(SAG6220_seq)
+
+    # sequence GC content
+    SAG6220_GC <- GC(SAG6290_seq)
+
+    # kmer frequencies for k=3
+    SAG6220_kmers <- count(SAG6220_seq, "A")
+
+    # sequence composition
+    SAG6220_table <- tabble(SAG6220_seq)
+
+Scroll down to see what was wrong!
+
+The first line should have produced this output in the console:
+
+    > SAG6220_length <- lenth(SAG6220_seq)
+    Error in lenth(SAG6220_seq) : could not find function "lenth"
+
+Whenever you see an error like “could not find function”, that means that you asked your IDE to load a library/function that it isn’t able to find.  Yes, that’s common sense – but you have to ask yourself WHY it couldn’t find that function.  In this case, it’s pretty obvious that the function is misspelled (it should be length instead of lenth).  But in other cases, you’ll find yourself trying to use a perfectly acceptable function and it won’t run.  There are two reasons for this:
+
+    1. The library containing that function isn’t available (e.g. maybe it’s not installed, or you didn’t invoke it using the library command).
+    2. Something about the way the function was run is incorrect, e.g., you didn’t pass the correct parameters, or the variables are cast wrong.
+
+The second line should have produced this output:
+
+    > SAG6220_GC <- GC(SAG6290_seq)
+    Error in GC(SAG6290_seq) : object 'SAG6290_seq' not found
+
+This type of error tells you that the sequencing object you tried to process couldn’t be found.  If you look at your ENVIRONMENT panel, you’ll see three objects with the “_seq” name – and none of the is SAG6290_seq.  So this is just another typo!
+
+The third line should have produced this output:
+
+    > SAG6220_kmers <- count(SAG6220_seq, "A")
+    Error in length - 1 : non-numeric argument to binary operator
+
+This one is a bit harder to figure out.  Whenever you see the term “argument”, you should think of it in terms of a command argument – an “argument” in that context is a parameter you pass to a program.  In this case, we tried to run the COUNT command with parameters SAG6220_seq and “A”.  It sure looks like there is a SAG6220_seq, but there’s no “A” variable.  Let’s dig a bit deeper, using the built in command help function in RStudio (there will be a similar function in any good IDE).
+
+Start by entering the command “count” (no quotes!) into the console, leaving your cursor at the end of the word (no space).  You should see some new popups appear – this is part of RStudio’s autocompletion function.
+
+The function we want is the first one, the plain “count”.  Scroll up to that one and leave it selected.
+
+That’s a bit more useful – it shows us exactly what kind of arguments can be passed to the function!  Notice that you can also press F1 to gain access to the full description of the function in the HELP panel at the bottom right.
+
+Looking at the possible parameters, you can see that we aren’t specifying everything we could – Rstudio (and most other programming languages) have predefined defaults that they will use for functions, so you only have to pass the parameters that you want that are different from the defaults.  In this case, we are trying to count k-mers, so we pass the sequence and the wordsize.  As it turns out, “A” is not a valid wordsize – trying running the command like this instead:
+
+    SAG6220_kmers <- count(SAG6220_seq, 3)
+
+See if you can figure out the problem with the 4th line on your own – it’s similar to one of the cases we’ve already examined.
+
+There are many, many other ways that code can go wrong, but hopefully you’ve gained some insight – and some tools to use – to try and figure more complex issues out on your own.  One last thing I want to point out about RStudio (and a few other IDEs):  The interface itself will often highlight regions where it thinks there may be problems.  For example, RStudio will put a red “X” at the left of lines of code that it thinks are problematic, e.g., if it can tell there is a syntax error.
+
+Troubleshooting Data
+
+Sometimes it’s not your code that’s the problem – sometimes the data comes with complications that you have to correct for.  For example, does the CSV you are importing have headers?  If so you’ll want to read it in so that the header labels don’t become part of the “data”.  Does your data have missing data?  You may have to read it in differently or fill in gaps.  Does your data have inconsistencies in spelling (e.g., a data column may only have two states, yes or no, but what if they are encoded using Y, y, N, and n, which in some programming languages equals four states instead of two?  Even more confusing – is the data being read in as the correct type of variable (e.g., numerical instead of character or text)?  And lastly – sometimes you’ll get data where it isn’t exactly clear what each column (or row) of data actually is – so you’ll have to do some sleuthing to figure it all out.
+
+You will eventually run into each and every one of these problems, and the first symptom will simply be “it doesn’t work”.  Let’s look at some ways that you can suss out the problem without losing your sanity.
+
+Let’s start by reading in a “simple” csv file.  In the CLASS RESOURCES you should find a file called week6.csv, download that and save it in the same location as the R script you are currently working on.  Now let’s try to read it in.  Add the following line to your script and run it:
+
+    newData <- read.csv(file='week6.csv, header = FALSE)
+
+Did you notice the red “x” RStudio put at the line?  Hopefully you figured out that the closing single quote was missing and that the file wouldn’t load – try again with this version:
+
+    newData <- read.csv(file='week6.csv', header = FALSE)
+
+After running this line you’ll see a new entry in the DATA section of the ENVIRONMENT panel at the top right.  Go ahead and click on the line for newData in the ENVIRONMENT tab to view the data:
+
+We aren’t showing the entire table here, just the top 7 lines.  You can see that our table has 4 columns, clearly labeled  - but the first row contains text representing the actual headers from the CSV.  Let’s see what kind of trouble that actually causes.  In the ENVIRONMENT tab, click on the blue arrow to the left of newData to show more information about the data:
+
+As you can see, all of the data imported as character data (shown by the “chr” in each line).  That means that you won’t be able to do any functions on any of the numerical data like AGE.  Also, the column headers were arbitrarily labeled as V1 through V4 – not exactly what we wanted.  So you can imagine that running any downstream analysis on this data would fail if you were expecting anything other than character data!
+
+This is actually an important trick – looking at your data in the data browser as we did above will show you the contents of the data, but it won’t show you anything about the way the data was cast – meaning what type of variable it is (numerical, character, etc.).  But we can get that information from the ENVIRONMENT tab!  You’ll need to do know how to do this, since even importing a table the correct way may lead to an improper data cast – and you’ll also have to know how to fix it.
+
+Let’s reimport the data with a small difference – we’ll tell the read.csv function that the data does have a header:
+
+    newData <- read.csv(file='week6.csv', header = TRUE)
+
+Now if we look at the ENVIRONMENT tab we can see that numerical values have been cast as integers, and character values have been cast as characters:
+
+What if the file format doesn’t match?  Most programs are very accommodating, to the point where they trust you to make the correct decision.  For example – what happens if you try to read that csv file as a table?  Go ahead and try it:
+
+    newData2 <- read.table(file='week6.csv', header = TRUE)
+
+There is only one column – all of the data from the four columns in the csv were read into a single column, since we didn’t let R know that this was a column separated value (CSV) file!  Clearly this won’t work – good thing we checked!
+
+Checking the format of your data – both before (to see that it is or isn’t what you think it is, e.g., a table vs a csv file) and after importing (to see if you have the correct number and type of variables) is an easy way to double-check your work.
+
+Even when everything seems to go correctly, you will eventually find yourself having to re-cast data as a different type of variable.  Luckily R has a variety of functions to help you do that!  Before we learn how to recast data, let’s review the common types of variables in R:
+
+VARIABLE TYPE    Abbreviation    Contents
+Numeric          num             Integers as well as complex numbers (e.g., 1, 2, 3.14, etc.)
+Integer          int             Integers only (e.g., 1, 2, 99, 1001)
+Factor           factor          Categorical text values
+Character        chr             Any character (text, numerical, symbolic)
+Logical          logi            Binary state (yes or no)
+
+The first two of these are pretty self-explanatory – numeric is any number, integer is only integers (no complex numbers).  Character is also pretty straight forward – it can be any character you can type (numbers, letters, and symbols), but whatever is classified as Character can ONLY be manipulated as a character – in other words, you can put numbers into a variable that is classified as Character, but you won’t be able to manipulate them as numbers unless you recast the variable (or values).  More on that later.
+
+The remaining two are a bit more fiddly to explain:
+
+Factor is defined as “a categorical text value”, which basically means that it’s a text value but with a limited number values – e.g., “black”, “white”, “red”, “green”, “blue”.  A factor can be used for labels, conditions, classes, etc., but not for general text (which is what Character is for).
+
+Logical variables can have only two values – true or false.  You can use them to classify numerical values based on a threshold, e.g., if you are looking at blood pressure and want to quickly classify people as hypertensive or normal you could program a line so that any reading above or below a certain value gets a Y (for yes) or N (for no) added to a separate column.  This makes it easier to re-classify variables later (if, for example, you change the threshold values).
+
+Let’s look at a few examples of recasting variables:
+
+Character to factor:
+
+In the newData variable you created, there is a variable called CLASS that stores Y or N (or sometimes y or n).  Since this is a variable where we are simply storing Y (for yes) or N (for no), we could recast this is either a character or a logical variable to make it easier to work with later.  First, let’s look at the contents of this column again – type the following line into the console and press RETURN:
+
+    newData$CLASS
+
+This command lists the CLASS column from the newData variable.  As you can see, it contains only Y, N, and a single lower-case y (which is a typo and will cause trouble later – don’t worry, I’ll show you how to fix that as well).  For now, let’s use the following command to display this data as a factor:
+
+    as.factor(newData$CLASS)
+
+You may have noticed that after you typed the “$”, the console gave you a popup – this contains all of the columns in the newData dataset that you could choose – another way IDEs are helpful!
+
+Once you have the line entered, press RETURN.  You will immediately see that you have FACTOR output, with three levels – thanks to that pesky lower-case Y.  So before we make this change permanent let’s fix that problem using this command:
+
+    toupper(newData$CLASS)
+
+This prints out the contents of newData$CLASS as all upper case!  We now have all of the tools we need to change the variable and fix the case problems, so let’s tie it all together into one command:
+
+    as.factor(toupper(newData$CLASS))
+
+As you can see, we are first converting all of the contents of the CLASS column to upper case, then converting them to factor – using parentheses to separate the actions.  MAKE SURE YOU UNDERSTAND HOW THIS WORKS before moving on!
+
+So far all we’ve done is to see that we can change the variable type, and display the output in the console.  Now let’s save those changes into the existing data frame (which is what we call the entire collection of data in “newData”).  Before we make the changes, let’s first expand the contents of newData in the ENVIRONMENT tab by making sure that the blue circle/white arrow is pointing down, as seen in the image to the right:
+
+Once you can see the variables in the ENVIRONMENT panel, go ahead and add this line to your code and run it, paying attention to the CLASS portion of newData in the ENVIRONMENT panel:
+
+    newData$CLASS <- as.factor(toupper(newData$CLASS))
+
+The CLASS column in newData has now been changed from character (chr) to Factor – with 2 levels (Y and N) and not 3 (Y, y, and N).  Easy, right?
+
+It’s important to point out that this was easy ONLY because we knew exactly what the problem was – in this case, our variable was the wrong type.  If you pay attention to the error codes you receive when running your code line by line, you should be able to pick up on the things like variables being cast as the wrong type, and using the ENVIRONMENT panel to check out the variable types you have you will be able to quickly figure out where things went wrong.
+
+As you may be able to guess, there are commands to change a variable to any other type:
+
+    as.integer
+    as.numeric
+    as.logical
+    as.character
+    as.factor
+
+Your mission will be trying to figure out when to use one of them, and which one to use.  Most of the variable casting errors you will run into when importing data will inevitably result in a variable miscast as character – so pay attention to that ENVIRONMENT panel!
+
+Even when your data imports correctly you may run into issues using it.  Keep in mind that bioinformatics is a very academic field, and many of the best/most popular software packages and data sets you can get were created and maintained under academic circumstances.  This means that your mileage may vary in terms of the quality of both – there may be bugs, or issues installing or running software packages, and data sets may be messy in a variety of ways (e.g., missing data, poorly labelled columns/row, etc).  You may have to stare at your data for a long time to figure out what kind of variable it should be cast as, or what the data even means.  Let’s take a look at an example from the real world using two different diabetes datasets.  The first one we will look at was downloaded from Kaggle and is called kaggle_diabetes.csv (you will find it in the COURSE RESOURCES).  If we use our standard read.csv command:
+
+    kaggle_diabetes_data <- read.csv(file='kaggle_diabetes.csv')
+
+The data is loaded in with no errors – let’s click on the name diabetes_data in the ENVIRONMENT panel to see what it looks like:
+
+I’m only showing you the first 10 rows of data, but it looks nice – all the columns are clearly labeled, but Kaggle itself does not include any additional information about the data, so without emailing the person who provided it (something you’re likely to have to do at least once in your life if you use an online database) we can’t figure out more about it.  The biggest question you may have is: what do the values (0 and 1) in OUTCOME mean?  Chances are that OUTCOME indicates whether or not the individual represented in that row actually had diabetes, but again, without additional information, we won’t know.
+
+As an aside – this is a pretty good dataset; if you look at the ENVIRONMENT panel and expand diabetes_data you’ll see that all of the variables seem to have been cast correctly.  The only one I question is OUTCOME, which could have been read in as a factor, but integer is okay.
+
+Let’s take a look at another diabetes dataset – this one from Mendeley Data.  It’s called mendeley_diabetes.csv and is also in the COURSE RESOURCES.  Let’s load that with:
+
+    mendeley_diabetes_data <- read.csv(file='mendeley_diabetes.csv')
+
+Again this data loads readily, but if we look at the way the various columns were cast we see some issues:
+
+    - We have a GENDER field that has been cast as character, and a CLASS field that has also been cast as character.  Reading through the data, you can see that these could be factors, but there are some capitalization errors that would have to be fixed first.
+
+    - More distressingly – what exactly does the CLASS variable contain?  There are three values (if you ignore capitalization):  Y, N, and P.  If we go back to the source at Mendeley, they tell us that Y = diabetic, N = not diabetic, and P = predicted to be diabetic.  But without paying close attention to the text, you would never know!
+
+The last thing we will cover is one of the more annoying things about R and RStudio for beginners – the Working Directory.  The Working Directory (WD) is defined as the default location where R will look for files to load, as well as where it will save any files you create.  It is typically set as your “home” directory – unless you load an R script by double-clicking on it, in which case the WD is set as the location of that R script.  This is useful in that you can save an R script to a folder or other location that contains your data files and then load the files with a relative path instead of an absolute path – for example:
+
+    Absolute Path:  file=’C:\Users\wolfgang\Desktop\RStuff\data.csv’
+
+    Relative Path:  file=’data.csv’
+
+You can see why the relative path is easier – to remember as well as to use.
+
+You can also use the FILES tab in the bottom right of RStudio to manually set the WD.  Looking at the files tab you will see a hierarchical directory listing of where the FILES tab is currently pointing.  You can click anywhere on that line (e.g. on the IN PROGRESS on the left) to jump to that directory.  Alternately, at the far right of that line you’ll see an ellipses (three dots in a row:  …).  Click on that and your system will pop up a directory navigator:
+
+Use the directory navigator to go to any directory you would like to use as your WD.  Then, all you have to do to set it for the current session is to use the gear icon above the directory line:
+
+To set the directory that is currently displayed in the FILES tab as the WD, just select “Set as Working Directory” here.  Easy, right?
+
+You can also use commands in R to set and load the WD.  You can explore those on your own, but I’ll give you a start with this command:
+
+    getwd()
+
+The getwd() command simply returns whatever the current WD is.  You can display this in the console, assign it to a variable, anything you like.  Most importantly you can use it to verify that the WD is what you think it should be!
+
+That’s it for this week.  Make sure to check out the OERs as well – see you in class!
