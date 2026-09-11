@@ -1,0 +1,135 @@
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 04-  SQL and MariaDB
+
+INSTRUCTIONS: For this homework you will be installing the MariaDB database application on your linux installation, creating a database and some tables.  In order to receive full credit for your work, you must show all commands used and all outputs.
+
+Question 1 (10 pts):
+Install MariaDB on your VirtualBox Linux system using the command line.  Use the following  three commands to do so.  Each command must be entered as a SINGLE LINE in ubuntu.  Submit a screen capture of your terminal window after each step for full credit:
+
+    sudo apt update
+    sudo apt install mariadb-server
+    sudo mysql_secure_installation
+
+NOTE:  after the third command you will be asked to enter the current password for root.  You should use “ubuntu” (without the quotes).  Then proceed to answer Y to all of the following questions.
+
+Question 2 (10 pts):
+Test whether or not your MariaDB server is up and running by entering the following command.  Submit a screen capture of the resulting output and press “q” to return to the command prompt:
+
+    sudo systemctl status mariadb
+
+Question 3 (10 pts):
+Log in to your SQL database.  As before submit a screen capture for full credit:
+
+    sudo mysql
+
+Question 4 (10 pts):
+At the MariaDB> prompt, create a new database using the following command, using your first name as the name of your database (I’ll us my name in the example):
+
+    create database WOLFGANG;
+
+Notice the semicolon at the end of the command.  All SQL commands end with a semicolon.  Now type this command to list all of the existing databases:
+
+    show databases;
+
+Notice that MariaDB (as any SQL database) has created other databases as support structure.  As before submit a screen capture of the resulting output.
+
+Now let’s create a user for the new database using the following command (again, I’m using the database WOLFGANG; you should use the one you created above, and use your name for the user, not mine):
+
+    create user 'wolfgang'@localhost identified by 'mypassword';
+
+Let’s make sure the user was created by entering this command:
+
+    select user from mysql.user;
+
+This command looks at the mysql database (which you’ll recall was listed when you listed the databases) and specifically shows the contents of the table user – which is why we used mysql.user above; it specifies database.table.
+
+MariaDB now has a user, but that user has no privileges.  We need to specifically tell MariaDB which databases that user can access and what level of user they are, and we can do that with this command:
+
+    grant all privileges on WOLFGANG.* to wolfgang@localhost;
+
+This gives the user wolfgang all privileges to the database wolfgang, for all tables (wolfgang.* = wolfgang database, all tables).
+
+Whenever permissions are updated on a SQL database it’s a good idea to refresh the privileges in memory; you can do that with this command:
+
+    flush privileges;
+
+Now let’s see if everything worked.  Enter this command to show all of the privileges for your user (again, replacing the username with the one you created) – take a snapshot and include it as before:
+
+    show grants for wolfgang@localhost;
+
+Now let’s create some bioinformatics data tables in our SQL database.  In most cases you’ll be interacting with SQL programmatically (e.g. you can use python to read and write to SQL, to create databases, users, and tables, etc.) but in order to learn the proper syntax we’ll do a few here directly in the SQL command line interface.
+
+Before we can create tables we have to tell SQL which database we want to use.  We can do that with the following command (as before, substitute the name of the database you created above):
+
+    use WOLFGANG;
+
+Notice that since I created my database in all caps I have to use that exact case when I invoke it in any commands!
+
+With the database selected, let’s create a tables with the following commands:
+
+    CREATE TABLE Gene(gid INTEGER, name VARCHAR(20), annotation VARCHAR(50), PRIMARY KEY (gid));
+
+This command creates a table, specifying it’s name as well the names of the fields – and the type of information they can include.  The basic syntax is:
+
+    Create table <tablename>(field1name field1type, field2name field2type,…,primary key(fieldname));
+
+We aren’t going to go into all of the specifics, but you should know the different types of fields you can use (e.g. VARCHAR, INTEGER, REAL).  The primary key is the unique identifier for each row in the database and is used for indexing – for more information on this see: https://www.w3schools.com/sql/sql_primarykey.ASP.
+
+You can use the following commands to verify that the tables were created properly:
+
+    show tables;
+    show columns from Gene;
+
+Now let’s manually insert some data into the table.  We’ll use the same basic command that you would use if you were doing this programmatically:
+
+    insert into Gene VALUES(1, "1433E", "enzyme binding");
+
+We are telling MariaDB to add values (not new fields or other things) to the table Gene, then within the parentheses we specify values for each of the defined fields.  Notice we do not reference the fields – you have to use the fields in order of creation, and use valid data types (e.g. INTEGER or VARCHAR).
+
+The real power of a database, however, is querying the data – and to do an example of that we’ll need to add more data.  Let’s add two more genes to our Genes table:
+
+    insert into Gene VALUES(2, "PolA", "dna replication");
+    insert into Gene VALUES(3, "Apob", "enzyme binding");
+    insert into Gene VALUES(4, "PolB", "dna replication");
+
+Now let’s create a second table that stores expression level data:
+
+    CREATE TABLE Expression(gid INTEGER, expression_level INTEGER, PRIMARY KEY (gid));
+
+The new tables needs some expression data.  Notice that the gid (gene ID) is a field in common with the Gene table:
+
+    insert into Expression VALUES(1, 93);
+    insert into Expression VALUES(2, 107);
+    insert into Expression VALUES(3, 1701);
+    insert into Expression VALUES(4, 42);
+
+Looking back at the Gene table you’ll see that we have two genes whose function is “enzyme binding” in our Gene table.  Using the two tables, let’s identify the name of the gene with the highest expression level:
+
+    SELECT name
+    FROM Gene JOIN Expression
+    ON Gene.gid = Expression.gid
+    WHERE expression_level = (select max(expression_level) from Expression);
+
+If everything went well your query returned the name "Apob".  In order to make this query work, we had to join the two tables (Gene and Expression) on their common ID (the gid field) and so that we could find the name of the gene with the highest expression level.  But what if we wanted to narrow this down – let's find the DNA replication gene with the highest expression value:
+
+    SELECT name, expression_level
+    FROM Gene JOIN Expression
+    ON Gene.gid = Expression.gid
+    WHERE annotation="dna replication"
+    ORDER by expression_level DESC
+    LIMIT 1;
+
+Here we are showing both the name and expression level, joining the two tables exactly the same way, but specifying that we want to look at only rows where the function (annotation) is DNA replication.  The tricky bit is we then sort the results by expression level in descending order (that's the 5th line) and limit the results to just the first result.
+
+For the last part of this exercise, perform these two steps and provide screen shots of the results:
+
+Add the following data to your tables.  You'll have to write your own SQL statements.
+
+      gid	name	annotation			gid	expression_level
+
+       5	Rpol	reverse transcriptase		5	05
+
+       6	tel	telomerase			6	120
+
+Now query the database.  List the genes in ascending order of expression level.

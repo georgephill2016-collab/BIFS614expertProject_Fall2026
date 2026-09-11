@@ -1,0 +1,54 @@
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 01- Algorithms & Data Structures
+
+INSTRUCTIONS: Answer the questions to the best of your ability.  You must show all work if you want full credit.  Citations must be used, especially for AI (e.g., which AI, which version, what was your prompt) if you want full credit.
+
+Question 1 (5 pts):
+Write the line of code that would install the package ggplot2 in R.
+
+Question 2 (5 pts):
+What is a BAI file?
+
+Question 3 (10 pts):
+Compare and contrast VCF and GFF files.
+
+Question 4 (10 pts):
+Compare & Contrast FASTA and FASTQ files.
+
+Question 5 (10 pts):
+What is BigO?
+
+Question 6 (10 pts):
+What are comment lines in an algorithm?  When should they be used?
+
+Question 7 (25 pts):
+Convert the attached to a fasta file and include it as an attachment to this homework.  Explain how you did this and what the differences are.  Was any information lost in the conversion?
+
+    @SRR396637.sra.1 HWI-EAS137R_0379:3:1:8738:1094 length=100
+    CGGGCTGGTAGCTGTAGTACAGCGGCTTGATGCCGAACTCGTCGCGCAGCAGGGGCAATTGCCGGGTCTGCGGGCCCCCGCTGGCGAGGGCTTACCTGCC
+    +SRR396637.sra.1 HWI-EAS137R_0379:3:1:8738:1094 length=100
+    EGDEDGGBGB3F=B>CE;CE?AFFAC<ACA<?EBE:-::=B=37>08)57-<6;)=-7)76>=9;<'>1?<8)1%@?A3@A6B=@A##############
+    @SRR396637.sra.2 HWI-EAS137R_0379:3:1:4414:1102 length=100
+    TCAATATGCTTGAGGTCCGACGGCGACATGTCGAACTGCCAACAATCGTTGCTGTGCTCAGCCTGGAACCGAGCTGCGCCTGGCTCCCGGGACAGTTGAG
+    +SRR396637.sra.2 HWI-EAS137R_0379:3:1:4414:1102 length=100
+    GGDGE<GDGBGG8GGBGGDBGGGBG3DC<GAGF<AB?DBDA>3+CA?FECGGGG>DEA=2FBE3EGD->GB8D+3+87:)AECC3B<AFB?+>*B87?2:
+    @SRR396637.sra.3 HWI-EAS137R_0379:3:1:6247:1095 length=100
+    CGAATGCGTGGCGGAGCGCACCCGAGGCGCCAGCCATCGACCATCCCGAACGTGCCGATAGAGCGAACTCCGAGCGAGGGCCCCCGCTTCGGCCATAGCT
+    +SRR396637.sra.3 HWI-EAS137R_0379:3:1:6247:1095 length=100
+    GGG@DGGGBGGGGDDDGGGBIIBHFGED@GE8AFE?;EA?CC@1EAAA=8DBBDDGD>?@?79B>9+=8=AA=BB?########################
+    @SRR396637.sra.4 HWI-EAS137R_0379:3:1:9438:1099 length=100
+    GCCTGCTTGGCGACCAGGGACTTCAGATCGGCAGTCGCCTGAGGGGCCGGGTCGTCTGCGCACTGGCGGCGCAGGTCCTCGGCCCCGGCCGGCAGGGGGC
+    +SRR396637.sra.4 HWI-EAS137R_0379:3:1:9438:1099 length=100
+    GGDBGB@-FEEF<CE3?BD:>99:5?80AB-6<?1AE28?F=*AE;=9,?+9<</8<<<=20?0=BBB@BAA4B##########################
+    @SRR396637.sra.5 HWI-EAS137R_0379:3:1:14223:1096 length=100
+    GGGCTTCCAGCAGGTTGATCCCGACCAGCAGCCAGAACAGGCCGATCATCACCACGGCGAAGCTGACGTAGTGGTCGAACAGGACGCTGACCAGCGCCGC
+    +SRR396637.sra.5 HWI-EAS137R_0379:3:1:14223:1096 length=100
+    I??IIGGIIIIHIHIIIIGIIIHIII>II8GGGGGC+E2E@CCB:BGD<D8GB<DD>@ED-?@<E<2>)-=;??<C?C8A=?--A?B9?4=+(<<<@==B
+    @SRR396637.sra.6 HWI-EAS137R_0379:3:1:15693:1098 length=100
+    GCGCGGCGAAACCTAGCGCAGGCCGCGCTTGGCTTGGTCCCGCTCGCGGAGAGCGTTGCACACCCGGGGCGGGGGCCAGGGACGGGCGGGGAGCCGGCAC
+    +SRR396637.sra.6 HWI-EAS137R_0379:3:1:15693:1098 length=100
+    DFB<8FF:A-7?B6BGGFD<<D8ADEC??-B#####################################################################
+
+Question 8 (25 pts):
+For a given algorithm, how will BigO change if the algorithm is run on different hardware (e.g. a faster processor)?  How will it change if a larger data set is run through the algorithm?  Explain.

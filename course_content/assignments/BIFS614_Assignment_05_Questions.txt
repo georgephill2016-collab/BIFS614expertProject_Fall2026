@@ -1,0 +1,113 @@
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 05- Data Reduction:  PCA in R
+
+INSTRUCTIONS: To complete this homework you will have to use R and R-Studio.  If you do not already have them, they are available at no charge from the following links:
+
+    R download:  https://cran.cnr.berkeley.edu/
+
+    R-Studio download (choose the free desktop version: https://www.rstudio.com/products/rstudio/download2/
+
+In this exercise we will build on the R skills you learned in Week 2 to perform a data reduction analysis using PCA.  Recall that PCA tries to find the axes that contribute the most to the variation in the data – in this case, which axes best separate malignant from benign tumors.
+
+IN ORDER TO RECEIVE FULL CREDIT you are expected to comment each code block, describing what it does in detail.  You will have to research some of the R commands we use on your own so that you understand what they are doing.  You will receive 40 pts for running the exercise and 60 pts for answering the questions at the bottom of the assignment.  You must also submit your R script along with these answers!
+
+Let's get started!
+
+Launch R Studio.  From the FILE menu choose NEW FILE -> RSCRIPT.
+
+Using the hashtag comment indicator, put your name and the date at the top of your script.
+
+The PCA plots we will generate require the factoextra package, so you should install it the same way you have installed R packages previously.  Then add this line to your script to make sure it is loaded into memory for this analysis:
+
+    library(factoextra)
+
+Now let's load the data set.  We will be using the Wisconsin Breast Cancer Data Set from the UCI Machine Learning repository; this dataset contains 30 columns of numerical data that has been extracted from breast cancer slide images.  In order to simplify the exercise, the data has been combined into a single .csv file (wcbd.csv) and is in the CLASS RESOURCES section of the classroom.  Download it and put it on your desktop, then load it into R:
+
+    wbcd <- read.csv('~/Desktop/wcbd.csv')
+
+Also, you should understand what each of the commands here is doing – for example, what is read.csv doing?
+
+HINT:  if you type a command into the console window, RStudio will try to autocomplete the command and offer you guidance on what parameters the command needs – including a link to the built-in help.  Try this out by typing just the first three letters of the order command into the console.
+
+Take a look at the data set.  Notice that the first two columns are not "data" but are descriptive information which we will exclude from the analysis.  That leaves 30 columns of data to reduce down to the most meaningful two which we can plot on a 2D plot.
+
+Now let's proceed.  To make things easier we'll create a new matrix, removing the ID column from the original data set, and then add that column back in but as the row names:
+
+    wbcd.data <- wbcd[,c(2:32)]
+    row.names(wbcd.data) <- wbcd$id
+
+To run the PCA we will invoke the prcomp function on the data:
+
+    wbcd.pca <- prcomp(wbcd.data[c(2:31)], center = TRUE, scale = TRUE)
+
+We now have our principal components.  To display them you can enter this command:
+
+    summary(wbcd.pca)
+
+Plotting the data is a simple matter of feeding the PCA into factoextra along with some parameters.  This works particularly well for this type of data; for general purpose plotting you should explore ggplot2, which is probably the most popular plotting package available for R.  Go ahead
+
+    fviz_pca_ind(wbcd.pca, geom.ind = "point", pointshape = 21,
+    pointsize = 2,
+    fill.ind = wbcd$diagnosis,
+    col.ind = "black",
+    palette = "jco",
+    addEllipses = TRUE,
+    label = "var",
+    col.var = "black",
+    repel = TRUE,
+    legend.title = "Diagnosis") +
+    ggtitle("2D PCA-plot from 30 feature dataset") +
+    theme(plot.title = element_text(hjust = 0.5))
+
+To explain what each command does in the previous block, I will break them down below:
+
+    - fviz_pca_ind : this is used to visualize the individuals in a PCA plot
+
+    - geom.ind = “point” : geom.ind stands for geometry of individuals, and = “point” refers to the command to instruct the plotting function to display individuals as individual points on the graph, without any text labels displayed.
+
+    - pointshape= 21 : this dictates the shape of the data points representing the individuals (data points) on the PCA plot. The number 21 in ggplot2 refers to a circle with a border that is filled in by color.
+
+    - pointsize = 2 : refers to setting the size of the points on the plot
+
+    - fill.ind = wbcd$diagnosis : In this case, fill.ind controls the fill color of the points representing our indivduals, and wbcd$diagnosis refers to our column named “diagnosis” containing our categorical variables of malignant or benign, within our data frame “wbcd”.
+
+    - col.ind = “black” : then refers to specify the color of the individuals on our graph as black
+
+    - palette = “jco” : refers to applying the “JCO” color palette to our PCA plot, which is a color palette based on the style in the Journal of Clinical Oncology. In using this command, we can ensure that our PCA plot is easier to distinguish between different groups/categories.
+
+    - addEllipses = TRUE : this instructs the plotting function to draw ellipses around the groups of data points in our PCA scatter plot to aid in being able to visualize and separate our different groups in our PCA.
+
+    - label = “var” : is used to specify how the variables are identified on the plot
+
+    - color.var = “black” : this specifies that the variable vectors should be colored black
+
+    - repel = TRUE : this is used to prevent overlap of the data points or variables
+
+    - legend.title = “Diagnosis” : this is used to set the title of the legend on the PCA plot to “diagnosis”
+
+    - ggtitle(“2D PCA-plot from 30 feature dataset”) : this sets the title of the PCA plot to 2D PCA-plot from 30 feature dataset
+
+    - theme(plot.title = element_text(hjust = 0.5)) : this is used to customize the appearance and the position of the main title of the PCA plot
+
+Source: Google. (2025). Gemini. [Large language model].
+
+QUESTIONS TO ANSWER:
+
+Question 1 (10 pts):
+How many dimensions are in the original dataset?  How do you know?
+
+Question 2 (10 pts):
+What do the "center = true" and "scale = true" flags tell prcomp to do?
+
+Question 3 (10 pts):
+We used the statement wbcd.data[c(2:31)] in the PCA command.  What does this command do?  Why was it necessary?
+
+Question 4 (10 pts):
+How many principle components did you find in total?
+
+Question 5 (10 pts):
+How much variation do the first and second component combined account for?
+
+Question 6 (10 pts):
+Does the plot you generated show a good separation of malignant from benign cases?  Why or why not?

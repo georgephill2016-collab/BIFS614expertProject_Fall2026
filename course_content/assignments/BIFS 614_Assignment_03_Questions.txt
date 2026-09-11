@@ -1,0 +1,33 @@
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 03-  Data Parsing
+
+INSTRUCTIONS
+
+You have ONE WEEK to complete this homework.  You must show ALL OF YOUR WORK for full credit.  This includes any prompts/corrections and version labels for any AI assistance.
+
+Each answer requires you to provide a solution using Linux.  Editing files by hand will not be accepted.
+
+Question 1 (10 pts):
+You have a folder with 10 files in it.  What command would you use to find the file(s) containing the text “bioinformatics”?  Give a complete example.
+
+Question 2 (15 pts):
+You have a command that outputs a summary of your data.  How would you:
+    1. Redirect that output to a different program
+    2. Save that output to a file
+Give complete examples for both.
+
+Question 3 (15 pts):
+You have a text file that contains the word “banana” in several places.  How would you replace the word “banana” with “minions” in the entire document with a single command?  Provide a complete example.
+
+Question 4 (15 pts):
+You have a tab-delimited table of SNP data and you want to summarize it to find only lines that contain a specific word in column 1 and a specific value in column 2.  How would you do this with a single command?  Provide a complete example.
+
+Question 5 (15 pts):
+You have three text files that you want to combine into a single text file by appending them one after the other.  Which command would you use?  Provide a complete example.
+
+Question 6 (15 pts):
+Write the linux command you would use to convert a FASTQ file to a FASTA file.  Explain what each step does.
+
+Question 7 (15 pts):
+You have a VCF file and you want to find out how many A to G mutations there are on chromosome one.  What command would you use for this?  Provide a complete example.

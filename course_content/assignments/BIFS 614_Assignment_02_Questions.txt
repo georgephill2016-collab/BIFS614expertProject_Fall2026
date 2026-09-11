@@ -1,0 +1,18 @@
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 02- Indexing and Searching
+
+Question 1 (20 pts):
+Define a heuristic algorithm.  When would we use one and why?  List at least 3 types of problems in bioinformatics that we discussed as requiring heuristic approaches.
+
+Question 2 (20 pts):
+If you have 45 taxa, how many possible rooted trees can you construct?
+
+Question 3 (20 pts):
+Given the sequence AATTACAGGCCGAGACAGATA find all kmers of size 4.  Create a table that displays their counts and positions.
+
+Question 4 (20 pts):
+Describe how a hash function works, using both descriptive text and a diagram.  Provide enough detail so that someone could derive pseudocode from your description.
+
+Question 5 (20 pts):
+Describe how maximum parsimony works.  Provide enough detail so that someone could derive pseudocode from your description.

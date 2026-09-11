@@ -1,0 +1,93 @@
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 06- Machine Learning in R
+
+To complete this homework you will have to use R and R-Studio.  If you do not already have them, they are available at no charge from the following links:
+
+R download:  https://cran.cnr.berkeley.edu/
+
+R-Studio download (choose the free desktop version: https://www.rstudio.com/products/rstudio/download2/
+
+In this exercise we will build on the R skills you learned in Week 2 as well as Homework 5 to create a neural network for breast cancer diagnosis.  We will be using the same data set you used in Homework 5 for the PCA analysis.
+
+IN ORDER TO RECEIVE FULL CREDIT you are expected to comment each code block, describing what it does in detail.  You will have to research some of the R commands we use on your own so that you understand what they are doing.  You will receive 50 pts for running the exercise and 50 pts for answering the questions at the bottom of the assignment.  You must also submit your R script along with these answers!
+
+Let's get started!
+
+Launch R Studio.  From the FILE menu choose NEW FILE -> RSCRIPT.
+
+Using the hashtag comment indicator, put your name and the date at the top of your script.
+
+The neural network we will build requires the caret library, so be sure it is install and that you have the proper library load statement at the top of your script:
+
+    library(caret)
+
+Now let's load the data set.  We will be using the same Wisconsin Breast Cancer Data Set from the UCI Machine Learning repository that we used for Homework 5, so you can use the same command to load it as before (make sure the file is still on your desktop first!):
+
+    wbcd <- read.csv('~/Desktop/wcbd.csv')
+    row.names(wbcd) <- wbcd$id
+    wbcd <- wbcd[,c(2:32)]
+
+As before, you should understand what each of the commands here is doing so that you can include that information in a comment above the code!
+
+HINT:  if you type a command into the console window, RStudio will try to autocomplete the command and offer you guidance on what parameters the command needs – including a link to the built-in help.  Try this out by typing just the first three letters of the order command into the console.
+
+You should recall from the exercise we walked through in class how to create an index  of 80% of the data (in this case split by diagnosis) so that we can split the dataset:
+
+    index <- createDataPartition(wbcd$diagnosis, p=0.80, list=FALSE)
+
+To create the training and validation data, we use the index (which represents 80% of the data) to partition the full data set:
+
+    validation <- wbcd[-index,]
+    training <- wbcd[index,]
+
+Let's take a look at the distribution of classes (benign vs malignant) in the training data set:
+
+    percentage <- prop.table(table(training$diagnosis)) * 100
+    cbind(freq=table(training$diagnosis), percentage=percentage)
+    summary(training)
+
+The next thing we're going to do is to save ourselves some time by setting variables for the "trControl" and "metric" flags used by each algorithm – just like we did in the iris dataset example we walked through previously:
+
+    control <- trainControl(method="cv", number=10)
+    metric <- "Accuracy"
+
+Now let's test our four models and compare their accuracy.  Note that each "fit" command must be entered as a single line in R, even though this document wraps them to fit them on the page:
+
+    set.seed(7)
+    fit.lda <- train(diagnosis~., data=wbcd, method="lda", metric=metric, trControl=control)
+    fit.knn <- train(diagnosis~., data=wbcd, method="knn", metric=metric, trControl=control)
+    fit.svm <- train(diagnosis~., data=wbcd, method="svmRadial", metric=metric, trControl=control)
+    fit.rf <- train(diagnosis~., data=wbcd, method="rf", metric=metric, trControl=control)
+    results <- resamples(list(lda=fit.lda, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+    summary(results)
+
+I'm going to use the lda-based model to do my predictions, but you should use whichever was the most accurate based on the above:
+
+    predictions <- predict(fit.lda, validation)
+
+To test how well our predictions worked, we can generate a Confusion Matrix – but if we try that with the current datasets it won't work – the command confusionMatrix wants the variables to both be factors, and the field "diagnosis" in the validation dataset is a variable of type CHAR (this is a common sort of thing you will run into with R).  So we need to use a slightly different command than we did previously to make sure that the comparison is done with the diagnosis from validation as a factor:
+
+    confusionMatrix(predictions, as.factor(validation$diagnosis))
+
+For our last step we'll feed our model some patient data and see what our AI Cancer Diagnostic Neural Network thinks the diagnosis is:
+
+    patient.data <- read.csv("wbcd_new_patients.csv")
+    predict(fit.lda, patient.data)
+
+QUESTIONS TO ANSWER:
+
+Question 1 (10 pts):
+When you looked at the distribution of the classes in your training data, what percentage beneign vs malignant did you have?
+
+Question 2 (10 pts):
+When you ran summary(results) for the various methods of nn model creation, which method was more accurate?  How could you tell?
+
+Question 3 (10 pts):
+What was the accuracy of your neural network when you ran the validation data?  How can you tell?
+
+Question 4 (10 pts):
+Were any of the new patients from the "wbcd_new_patients" data diagnosed as malignant by your neural network?  How can you tell?
+
+Question 5 (10 pts):
+For your new patient analysis, what is the probability of a mis-diagnosis?
