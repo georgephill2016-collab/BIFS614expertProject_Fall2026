@@ -1,0 +1,109 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 5
+TITLE: Heuristic Searching
+
+Searching a database is typically a straightforward affair – you enter a query and you expect to get back the direct answer to your results.  When the size of the data that you are searching within becomes increasingly large, however, the speed of doing a complete, comprehensive search can become equally large.  In fact, there are problems that we consider unsolvable because of the lack of an efficient algorithm that can solve them.  One example that you may already be familiar with is that of maximum parsimony.  Let’s walk through an example:
+
+For a given number of species (taxa), there is a “true” phylogenetic tree that graphically describes how they evolved from a hypothetical ancestral state (root), and the branches leading to the taxa will have various nodes that represent previously-extant common ancestors for that taxa branching off of them.  The problem is that there are a large number of possible branching patterns (trees) for any number of taxa, and only one is the actual correct one.  The idea behind Maximum Parsimony is that you build all possible trees, map the informative characters onto those trees, and then select the one tree that has the fewest number of evolutionary changes (the most parsimonious tree).  A simple example:  let’s say you have 4 taxa and you want to create a maximum parsimony tree.  To compute the number of possible rooted trees, you can use this formula:
+
+                            (2n-3)!/[(2n-2)*(n-2)!]
+            (see http://carrot.mcb.uconn.edu/mcb396_41/tree_number.html)
+
+Plugging 4 in for N gives us 15.  So for 4 taxa it’s relatively easy to construct and evaluate all trees.  Very few papers, however, are concerned with the phylogeny of 4 taxa.  So how many possible trees are there for an interesting number of taxa – say, 30 (which is how many my first publication dealt with)?  Rather than doing the math you can just look the answer up on the link above to see that the number is 8.69E+36.  For an even larger number of taxa, say 60, the number is 5.01E+94 – that’s more possible permutations than the number of protons in the universe!
+
+Clearly we can’t realistically search the entire possible solution space for a large number of taxa – not in any reasonable amount of time.  We call this an NP-Complete problem – nondeterministic polynomial, because it takes polynomial time to solve.  So how do we solve this kind of problem?
+
+The answer is that we don’t search the entire solution space.  We take a short cut – a heuristic approach.
+
+HEURISTICS
+
+A heuristic is defined as a problem-solving method that uses shortcuts to arrive at a “good enough” solution in a limited amount of time.  So a heuristic algorithm, then, produces an acceptable solution to a problem, albeit without any ability to prove that it is in fact correct.  Given that the alternative is to wait until the heat-death of the universe and probably still not have an answer, heuristic approaches are, well, acceptable.
+
+Heuristic approaches constrain the solution (or search) space to help minimize false solutions.  While they promise speed and accuracy, you typically have to sacrifice one or the other, at least partially, and they work better with larger sample sizes and well-defined problems - problems like:
+
+    - Sequence alignment
+    - Sequence searching (including BLAST)
+    - Parsimony-based phylogenetics
+    - Motif detection
+    - Protein docking
+    - Protein structure resolution
+
+Let’s take a look at a few bioinformatics examples where heuristic approaches are used:
+
+FASTA
+
+FASTA is far more than a file format – in fact, the file format was designed to be used with the FASTA sequence search algorithm.  The FASTA algorithm predates BLAST, and while not used as frequently anymore, it still has value – while slower than BLAST, it is far more sensitive for nucleotide searching and works better than BLAST for repetitive sequences.  In addition it works very well for gapped local alignments.
+
+Similar to BLAST, the FASTA algorithm uses a word-length starting point, which is called a ktup, and applies penalties for both opening and extending gaps.  Scoring is also similar, using an E (expectation) score, but with the addition of a Z score.
+
+Here’s how FASTA works:
+
+Step one:
+
+    - Find exact matches of word size between query and target, record in a hash/lookup table – the hash/lookup can be pre-computed for different searches k=1 (oligo 20nt), k=6 (normal 100-500nt)
+
+Step two:
+
+    - Cluster the ’hot-spots’ into diagonals by making a matrix of 1s and 0s by position
+    - score all of the diagonals with each region (+) and each gap -
+    - find the 10 best diagonals and then perform a local alignment with no indels
+    - the best partial alignment is called init1 and is used in Step Four
+
+Step three:
+    - going back to the 10 partial alignments, the algorithm now takes any that exceed a certain score cut-off and tries to make them into longer alignment runs
+    - if a longer partial can be made (and this is a graph theoretic problem) it is optimally aligned and returned as one result from the algorithm
+
+Step four:
+
+    - picking up the init1 partial alignment from Step Two the algorithm performs a banded Smith Waterman
+    - a window of alignment space either side of the init1 diagonal is identified and optimal local alignments are performed throughout the space
+    - the alignments are scored by matrix and statistics are calculated, normalised Z-score and E value
+
+As an output, FASTA returns both a scoring histogram showing the distribution of matches as well as tabular output of the best matches (much like BLAST):
+
+Histogram:
+[IMAGE: FASTA scoring histogram]
+
+Matches:
+[IMAGE: Example FASTA output showing the best sequence match]
+
+FASTA is heuristic in that it initially finds a series of word hits – the word-to-word matches of length k – and identifies potentially “best” matches before performing a more time-consuming optimized search using a Smith–Waterman type of algorithm (URL: https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm).  This doesn’t mean that it didn’t miss a better match somewhere else; by using the word of length k it might have missed a better match that it might have found had it used a different word, even with the same length of k.  We call this the problem of local optima – the heuristic approach found a good match given it’s starting point, but it might have missed a better solution that exists elsewhere in the solution space.
+
+The same basic problem (that of local optima) exists with all heuristic approaches, including the next example – maximum parsimony.  While you’ve been exposed to parsimony before, in this discussion we are interested primarily in how it uses heuristic approaches – shortcuts – to find an answer that is “good enough” for a problem where we cannot search the entire solution space.
+
+MAXIMUM PARSIMONY
+
+Recall from above that with parsimony the number of possible trees (the search space) increases exponentially with the number of taxa.  Thus, maximum parsimony methods use heuristic approaches to find an answer that is “good enough”.  How does this work?
+
+One approach is to construct a starting tree by adding one taxa (sequence) at a time until there is a complete tree, scoring that tree, and then performing branch swapping – rearranging nodes to see if the score can be improved.  In some approaches, branch swapping occurs during sequence addition.  For example, until there are more than a given number of branches (say, 9), the algorithm can try all possible combinations (there aren’t that many) and finds the optimal tree – below is a purely hypothetical construct of a tree with 9 taxa:
+
+[IMAGE TRANSCRIPTION: Hypothetical tree]:
+
+Tree connections and branch lengths:
+
+Node 1 connects to Node 2 (branch length 0.2).
+Node 1 connects to Node 7 (branch length 0.7).
+
+Node 2 connects to Node 3 (branch length 0.2).
+Node 2 connects to Node 6, labeled C (branch length 1.3).
+
+Node 3 connects to Node 4, labeled A (branch length 0.6).
+Node 3 connects to Node 5, labeled B (branch length 0.4).
+
+Node 7 connects to Node 8, labeled D (branch length 0.3).
+Node 7 connects to Node 9, labeled E (branch length 0.3).
+
+Now the algorithm adds another sequence to this “best” tree.  Rather than trying all possible combinations (and again the number when this happens doesn’t have to be 9, it could be 10 or 12 – wherever the algorithm is designed to start doing heuristics instead of exhaustive searching), the next sequence is added to an existing clade (e.g. the group with taxa 3, 4, and 5) and the tree evaluated.  Next the new branch is swapped to another clade (e.g. the group with 7, 8, and 9) and the tree evaluated.  This is repeated until the new taxa has been tried in each of the clades, and the best scoring tree is retained and the process repeats with the addition of yet another taxa.
+
+    NOTE:  Some algorithms also perform branch swapping at the end of the tree construction process – swapping the terminal nodes within each clade to see if the score can be improved.  There are several variations on when and where branches are swapped, but the general idea is to not evaluate all trees and just make a “best guess”.
+
+So you can see how this approach could lead to a local optima – what if a taxa is actually better placed somewhere else, but the swapping algorithm didn’t try placing it there because it was “too far away” from the starting node?
+
+There are ways of compensating for this as well.  Since this problem is caused by adding a taxa/sequences later in the process (after full evaluation is possible), one way to compensate is to generate multiple trees from the same data set, jumbling (randomizing) the input order of sequences each time so that the sequences are not always added in the same order.  Since the trees will most likely be slightly different with each run, you then generate a consensus tree by computing the number of times each node appears and displaying that at the node.
+
+Jumbling allows you to minimize the chances that a sequence is placed in a less-than-optimal location simply because of when it was added relative to the other sequences.  Ideally you will jumble (randomize the input order) and create a tree 10 (or more) times, meaning that you are actually generating 10 (or more) “optimal” trees.  Of course, this means that the algorithm runs 10 times longer, but with the benefit of probably improved accuracy – and it still doesn’t take nearly as long as evaluating all possible trees!
+
+    NOTE:  a technique called bootstrapping is also often used when constructing phylogenetic trees.  It is used to ensure that there is no positional sensitive to tree construction (e.g. that there aren’t columns in the alignment that skew the construction one way or the other) by resampling the data and constructing multiple synthetic datasets from the original dataset.  This is typically done 100x (generating 100 synthetic datasets) and again a consensus tree made.  So if you combine bootstrapping and jumbling with the recommended minimum numbers (100 bootstraps, 10 jumbles) your algorithm now runs 1000 times – and it is still faster than evaluating all possible trees!
+
+Hueristic approaches can be applied to any problem where the possible solution space is so large as to make an exhaustive search computationally intractable.  Bioinformatics, as you know, has many such problems.  Be sure to read this week’s OERs for some more elaborate examples!

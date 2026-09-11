@@ -1,0 +1,165 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 1
+TITLE: Introduction to Bioinformatics and Algorithms
+
+Bioinformatics
+
+Bioinformatics has been described as a “mutually beneficial collaboration between biology and computer science”. The problems faced by a modern biologist (or “life scientist”) frequently involve complex data sets – in terms of both the type of data and the size of the data set – and this in turn provides exciting new opportunities for synergistic activities with computer scientists.
+
+Defining the problem
+
+Often one of the biggest challenges you will face as a bioinformaticist may surprise you – often the most difficult part of a project is determining the accurate definition of the problem you are trying to solve.  In computer science that is known as “gathering requirements” or figuring out exactly what the algorithm you are about to write needs to do, and in what order.  In other words, what are the goals of the code?  What steps do you have to take to accomplish them?  For example, let’s say you need to write an algorithm to reverse-complement a DNA sequence.  Sounds simple, right?  Let’s see if we can define the requirements:
+
+1. Take an input DNA sequence
+2. Reverse-complement the sequence
+3. Provide the reverse-complement sequence as the output
+
+The first step – taking an input – and the last step – providing the output – are very easy.  What, exactly, does step 2 mean?  A programmer might not know, so the biologist has to explain clearly (this is why the best bioinformaticist is someone with both biological and computer science backgrounds).  Let’s walk through it:
+
+Let’s start with this very simple sequence:  ATGGCC.  It might be better, though, to write the sequence out formally like this:  5’-ATGGCC-3’.  Recall that DNA is an anti-parallel double-helix.  This means that the strands run in opposite directions to each other.  So the actual DNA molecular at this point would look like this:
+
+5’-ATGGCC-3’
+3’-TACCGG-5’
+
+We usually only provide the sequence in the relevant orientation – that is, the strand that is in the “gene” orientation.  Hence, we would provide the one with the START codon (the ATG) only, which is what we provided initially (ATGGCC).
+
+The reverse-complement of a sequence is the complementary sequence, reversed.  So for the above example (ATGGCC) the complement is the complementary strand, reversed (so you are still reading it in the 5’ to 3’ direction):  GGCCAT.
+
+So the requirements could be updated to be the following:
+
+1. Take an input DNA sequence
+2. Reverse-complement the sequence
+    a. Take the complement of the given sequence
+    b. Reverse the complement so it is displayed in 5’ to 3’ orientation
+3. Provide the reverse-complement sequence as the output
+
+Solving the problem
+
+Once you have the requirements, it’s easy to start blocking out your algorithm in what we refer to as “pseudocode”.  In fact, a good set of requirements (like the above) is very close to being pseudocode.
+
+Pseudo code is a representation of code which can be easily understood by anyone with minimal programming knowledge – an organized and complete sequence of steps that have to be taken to solve the problem, written in plain English.  This differs from an algorithm in that there is no specific syntax or formalized variable structure in place, so it can’t actually be run on a computer.  So why would anyone use pseudocode?  Here’s why:
+
+- Pseudocode improves the readability of any approach and makes it easy for anyone to understand what the algorithm is doing
+- Pseudocode acts as an outline for the actual algorithm that will be written – and can be used as the basis for writing the algorithm in any language.
+- Pseudocode can be used as the “comment” blocks in the actual algorithm to help make sure that, again, what the code should doing at any particular line is easily understood.
+
+Now let’s take our requirements above and convert them into pseudocode.  The basic process is simple, providing you have already arranged the tasks that the algorithm must perform in an orderly sequential fashion.  I’ll also use a separator character at the beginning of each line so that when I want to convert the pseudocode to an algorithm I can use the pseudocode as the comment.  Since most (but not all) programming languages use “#” as the comment indicator, I’ll use that and start with some basic information:
+
+# The purpose of this code is to take an input sequence and
+# reverse-complement it, then provide the output.
+
+Notice that I used multiple lines – you can have as many comments as you like.  In fact, the more, the merrier!  It will make understand not only what the code is supposed to do, but how it is doing it, much easier for everyone – including yourself when you revisit the code years later.
+
+Now let’s start adding lines:
+
+# The purpose of this code is to take an input sequence and
+# reverse-complement it, then provide the output.
+#
+# Read In the Input Sequence
+
+Notice that I used an extra “#” to separate the “comments” from the “pseudocode”.  This makes it easy to read!
+
+I could also have written this:
+
+# The purpose of this code is to take an input sequence and
+# reverse-complement it, then provide the output.
+#
+# Read In the Input Sequence and store it in a string called input_sequence
+
+A string is a type of variable this is exactly what it sounds like – a series of values.  A DNA sequence is very readily stored in a string.  This is more specific and more detailed, although chances are that anyone taking the version without “and store it in a string” would have known to do that with the input.  It’s something you just do when you read in data – cast it in a variable of some sort.  It’s also a good idea to decide on what your variable names could/should be up front – and use good variable names, like “input_sequence” that describe exactly what they are.
+
+Let’s continue:
+
+# The purpose of this code is to take an input sequence and
+# reverse-complement it, then provide the output.
+#
+# Read In the Input Sequence and store it in a string called input_sequence
+#
+# Now get the complement of the string:
+#
+# Read each base in the string and replace it with the appropriate complementary base
+# (Alternately create a new string variable and populate it with the complementary base)
+
+Notice what I did there?  Not knowing for sure which would be easier I just put down the ideas I had for implementing that step.  It’s always a good idea to put your thoughts down like that – later, when you actually write an algorithm in a programming language, you can decide which method is “best”.  Let’s keep going:
+
+# The purpose of this code is to take an input sequence and
+# reverse-complement it, then provide the output.
+#
+# Read In the Input Sequence and store it in a string called input_sequence
+#
+# Now get the complement of the string:
+#
+# Read each base in the string and replace it with the appropriate complementary base
+# (Alternately create a new string variable and populate it with the complementary base)
+#
+# Output the reverse-complemented sequence
+#
+
+The pseudocode now has all the steps required to meet the stated requirements.
+
+Even though pseudocode isn’t “real code”, it forms the basis for it.  As such, you should try to follow some basic guidelines that will help you formalize things when you do start coding:
+
+1. Use good naming conventions. Use simple and consistent naming for variables in your pseudocode, so that the variable name tells you and anyone else reviewing your code what that variable holds.
+2. Use consistent upper and lower case naming conventions.  Some recommend using CamelCase for a routine and lower case for variables (e.g. InvertSequence as a routine, input_sequence as a variable).
+3. Use as much detail as you can to describe what is going to happen in the actual code. This will help you write the code, and others understand the code.
+4. Use standard programming structures such as ‘if-then-else’, ‘for’, ‘while’, etc to help indicate what the code will be doing.
+5. After you’ve finished, go back and re-read your code and make sure it tells a consisten, linear story.
+6. DO NOT write the pseudo code in a complete programmatic style. It needs to be simple so that anyone, even a non-programmer, can understand what your pseudocode algorithm is doing.
+
+Writing the Algorithm
+
+Your pseudocode is, in many senses, your “algorithm”.  It is the list of steps, in order, that must occur in order to solve the problem/task you have defined in your requirements.    Actually writing it in code is another matter, however.  Depending on your experience, you may choose to write the code in R, python, perl, java, or any other language.  Even bash has enough data processing commands (e.g. sed and awk) to perform many bioinformatics tasks!  Any of these languages is fine – they share many similarities in their general structure, so choose one that you like.  Most bioinformatics have moved towards python, so if you are starting out fresh that’s a great program to learn.
+
+While we’re talking about programming languages, a word about IDEs.  IDE stands for Integrated Development Environment – essentially an IDE is a program that helps you write code using features such as autocomplete of terms (including functions and variables), syntax checking, and multiple windows that allow you to see your code as well as any variables you’ve declared – and their contents, etc. etc.  I strongly recommend that you consider using an IDE for development – it will make your life much easier!  If you are planning on using python take a look at Spyder, which is a fantastic IDE for python development.  Also, please consider Anaconda, which lets you set up multiple python environments (e.g. for different versions of python, or different libraries within python).  Similarly there are IDEs for R (RStudio) and every other language out there.
+
+When you are writing your code, don’t be afraid to use a brute force approach to solve the problem – you may know that there is a “better, more elegant” solution, but often it’s fine to do something inelegant and fast in your first implementation.  You can always go back and optimize the code later (and we’ll talk about optimization a bit more next week with BigO).
+
+Also be sure to comment the heck out of your code!  I like to say that good code is 50% code and 50% comments….make sure you and anyone else reviewing your code in a few years knows exactly what you are trying to do and how.  If you use python, one of the first comments in your code should include the python version information – python 2.7 was very popular for a very long time, but it is finally deprecated, and python 3.5 (and higher) have replaced it.  If you try to run python 2.7 code in a 3.5 environment (or vice versa), you will quickly see that the code simply won’t work – so make sure to indicate the correct version!
+
+Once the basic algorithm is written there is still work to do in eliminating “bottlenecks” – e.g., how efficient is the algorithm, how much “noise” is there in the data, and how meaningful are the results…this last one is often the most perplexing and difficult to deal with, since the data comes from one domain (biology) and the processing comes from a second domain (computer science), and the results are then fed back to the first domain. From personal experience I've seen that this last problem is most easily solved when the “domain experts” – the people with the biology and/or computer experience – are one and the same. And when working in a team environment, it's still optimal to have overlap – the biologist should understand the basics of an algorithm even if they can't write it themselves, and the programmers should understand some of the basics of biology!
+
+Working with Data Structures
+
+Equally important to the problem of how to analyze the data (the algorithm) is how to structure the input data. You can organize data in many different ways, some of which are more useful than others. When data is collected and stored in a logical, pre-defined manner the result is called the “Data structure”. There are many different existing data structures you will run into in bioinformatics, including:
+
+1. FASTA
+2. GENBANK
+3. VCF
+4. SAM/BAM
+5. XML
+
+Let’s take a look at one of the simplest examples – a FASTA file.  Originally developed to work with the FASTA sequence alignment software, a FASTA (pronounced “fast A”) file is very easy to understand.  Like most of the formats above, it’s a plain text file (although the file extension will be *.fasta, or *.fa).  FASTA files can contain one or more sequences, where each sequences has two lines:  the header line, and the data line.  The following example has 10 sequences:
+
+>seq1
+KYRTWEEFTRAAEKLYQADPMKVRVVLKYRHCDGNLCIKVTDDVVCLLYRTDQAQDVKKIEKFHSQLMRLME LKVTDNKECLKFKTDQAQEAKKMEKLNNIFFTLM
+>seq2
+EEYQTWEEFARAAEKLYLTDPMKVRVVLKYRHCDGNLCMKVTDDAVCLQYKTDQAQDVKKVEKLHGK
+>seq3
+MYQVWEEFSRAVEKLYLTDPMKVRVVLKYRHCDGNLCIKVTDNSVCLQYKTDQAQDVK
+>seq4
+EEFSRAVEKLYLTDPMKVRVVLKYRHCDGNLCIKVTDNSVVSYEMRLFGVQKDNFALEHSLL
+>seq5
+SWEEFAKAAEVLYLEDPMKCRMCTKYRHVDHKLVVKLTDNHTVLKYVTDMAQDVKKIEKLTTLLMR
+>seq6
+FTNWEEFAKAAERLHSANPEKCRFVTKYNHTKGELVLKLTDDVVCLQYSTNQLQDVKKLEKLSSTLLRSI
+>seq7
+SWEEFVERSVQLFRGDPNATRYVMKYRHCEGKLVLKVTDDRECLKFKTDQAQDAKKMEKLNNIFF
+>seq8
+SWDEFVDRSVQLFRADPESTRYVMKYRHCDGKLVLKVTDNKECLKFKTDQAQEAKKMEKLNNIFFTLM
+>seq9
+KNWEDFEIAAENMYMANPQNCRYTMKYVHSKGHILLKMSDNVKCVQYRAENMPDLKK
+>seq10
+FDSWDEFVSKSVELFRNHPDTTRYVVKYRHCEGKLVLKVTDNHECLKFKTDQAQDAKKMEK
+
+It looks like the file wraps the text, but that’s only because of the limitations of the text viewer we are using (Word).  Remember that each sequence has only two lines, which means there are only two carriage return/line feeds – one at the end of the header, and one at the end of the sequence.
+
+The header contains useful naming information – and you’ll eventually run into some crazy names including all sorts of “metadata”.  That’s because FASTA has no actual structure for storing anything other than the name and the sequence, so developers often pack the name with all sorts of goodies.
+
+A Quick Aside:  Text Editors:
+
+    While I’m talking about plain text, let me point out that many people confuse Word Processors as Text Editors.  They are not at all the same!  Microsoft Word files are very highly structured, and if you load a text file into Word and save it as a Word file, you won’t be able to use it as a data file.  Go ahead and try opening a Word file up in a real text editor (I recommend Sublime Text or BBEdit) that shows you all the guts of the file!  After that, for something a bit more domain appropriate, use Sublime Text or BBEdit to look at a FASTA or VCF or CLUSTAL file – you should be able to find some on the internet.  And keep a real text editor (Sublime Text or BBEdit) handy; you’ll need it as you work with bioinformatics data files!
+
+Sometimes the data structure is defined by the programming language, but in most cases you may find it easier to define your own input/output data structures based on both the data itself and the programming algorithm AND language combined. And don't worry if you find yourself wanting to rewrite everything a few weeks after you’ve started – even the best programmers will design a structure (or an algorithm) and then go back later and tweak things when they see where they break, or aren't efficient. This is all part of the iterative process of software development!
+
+ON YOUR OWN:  Do some research on your own – you should know the difference between a table, a database, a plain-text file, and an XML format file.

@@ -1,0 +1,296 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 11
+TITLE: Machine Learning in Bioinformatics
+
+Since the early 1950’s we have been anticipating the development of computer-based “artificial intelligence”, or AI.  While we haven’t gotten to the point of “Hal 9000” or “SkyNet” yet (thankfully!), we have developed many ways in which machine learning, or ML, can be used to help us analyze data.  So what, exactly, is ML?
+
+ML is, essentially, a system for creating statistical models (referred to as neural networks) that improve “automatically” through experience, or training.  There are many different kinds of ML, but the simplest form is an Artificial Neural Network, or ANN.  An ANN is a model based on a series of connected nodes called artificial neurons, which are analogous to neurons in a biological brain.  Each node (artificial neuron) can transmit information to other nodes, and when nodes receive information, they process it and signal additional nodes that they are connected to.  Whether or not data gets transmitted to a node depends on statistical weights and thresholds; the output of any given neuron is computed by a non-linear function representing the sum of its inputs.
+
+The signal sent by an ANN node will be a real number, rather than a neurotransmitter, but you can see why we can it a “neural network”.  The connections between the nodes (neurons) are called “edges” (referring graph theory), and each edge will have a weight that is adjusted as the entire network is trained – as it learns.  This weight modifies the strength of the signal, and typically a threshold is set at each edge so that the signal only goes through if the aggregate signal that a node (neuron) receives exceeds that threshold.  So the job of the neural network training is to adjust all the edge weights until the model that the ANN represents accurately describes the data.
+
+For any ANN, there’s always an INPUT layer (where the data comes in), and OUTPUT layer (where the “answer”, or classification) is output, and one or more “hidden” layers:
+
+Figure :  Typical ANN structure (from https://en.wikipedia.org/wiki/Machine_learning)
+
+These different layers (with exception of the OUTPUT layer) all perform different mathematical transformations to their inputs from the previous layer.  It’s a bit of an art, deciding how many hidden layers to use – you have to have one, but there’s no logical limit (although computationally the CPU demands rise as you add layers).  Most people that build ANNs use a “trial and error” approach, using different numbers of hidden layers and other configuration variables and keep the final model that best is able to predict the data.
+
+An aside:  how do we know the predictions an ANN makes are correct?  Typically we take a large dataset – the larger the better, because more data typically means a well-trained neural network – and we train the ANN with 80% of the data (bear in mind that for this dataset we know what the answers should be).  Then, once we’ve trained an ANN, we test it using the remaining 20% of the data, without giving the ANN the answers.  If the ANN is good at predicting the answer (say, 90% accuracy or better), the ANN can be applied to new data where we do not yet have the answer.
+
+We aren't going to do a deep dive into the mathematics behind ANNs – as a bioinformaticist you are far more likely to build a neural network using existing tools and customizing the layers to your data than you are to code a new form of NN.  You should, however, be aware that there are many different types of NN, with different ideologies underlying their approach – be sure to read this week's OERs!
+
+ML in BIOINFORMATICS
+
+Let’s take a look at some real-world examples:
+
+Researchers from the Harvard Medical School took a dataset containing 64 images of cells from normal, healthy human female breast tissue as well as 112 images of cells from patients with breast cancer.  The images were used to train and test two ANN ML algorithm containing a single hidden layer (after some basic image processing).  The neural networks were between 59% and 70.49% accurate at predicting which tissues represented breast cancer.  While this doesn’t sound very high, when you take into account that clinical diagnosis accuracy is around 50%, the ANN performed very well.  (Kaymak, Helwan, and Uzun, Procedia Computer Science 120 (2017) 126–131).
+
+Google Health (yes, a division of that Google) similarly developed ANNs used to diagnose both breast and lung cancers, with similar results.  Similarly, ANNs are being used to help develop better drugs, medicines, and even foods.
+
+ANNs aren’t by any stretch of the imagination “thinking machines” – the original goal of the ANN was to solve problems in a fashion analogous to the human brain.  As it they developed it was found that they were very bad at generalized problem solving, but very good at performing very specific tasks – like examining images to see if a patient has cancer.
+
+YOUR FIRST NEURAL NETWORK
+
+Enough talk – let’s go ahead and build a neural network.  We’ll be building this example in R, which after Python is probably the most popular way to construct ANNs.
+
+    1. First you’ll need a functioning R installation.  If you don’t already have R on your computer, you can download it from here:  https://mirror.las.iastate.edu/CRAN/.  Once you have it downloaded, you can install it as you would any other application.
+
+    2. You will also need RStudio, which is an excellent IDE (integrated development environment) for R.  If you don’t already have RStudio, you can download it from here:  https://rstudio.com/products/rstudio/download/#download.
+
+Once you have these programs installed, go ahead and launch RStudio.
+
+The next thing we have to do is to install some packages.  R is a very versatile – and extensible – application; chances are that for any specific function that you want to run, someone has already written a package that will help you.  For this exercise we’ll install the caret package, which has the appropriate ANN programs.
+
+To install the caret package in R, make sure your cursor is in the CONSOLE tab on the left and enter this command:
+
+    install.packages(“caret”)
+
+The last time I ran this, R asked me if I wanted to install additional packages required by caret from source.  If you get asked this question, just enter “Yes” and let R continue – it may take a few minutes:
+
+Once R finishes, you are ready to write the R script.  From the FILE menu, choose “New File”, then “R Script”
+
+You’ll see that the left panel now includes an untitled tab at the top – this is where your R script will be written
+
+Start by adding a “header” line:
+
+    # This is an R script designed to create a neural network
+
+Next we’ll make sure that if the script gets used on a different machine that the proper libraries are installed with the install.packages commands:
+
+    # Install needed packages
+    install.packages("caret")
+    install.packages("e1071")
+    install.packages("kernlab")
+    install.packages("randomForest")
+
+Lastly we can tell R to load the caret library:
+
+    # Load the necessary libraries:
+    library(caret)
+
+Notice that there is a “run” button at the top of this window
+
+This button lets you execute the script one line at a time.  So, for example, if you put your cursor back at line 1 and hit the RUN button, it’ll execute the next code line, which is line 4.  You don’t have to execute your program one line at a time, but for trouble-shooting it makes things much easier.  Go ahead and run all of the lines you have added so far.
+
+So now we’ve loaded caret (as well as the libraries it depends on, lattice and ggplot2), let’s continue.  We’ll use one of the built-in tutorial datasets, which as it happens is a biological example based on irises (the flowers).  Add and run the following lines:
+
+    # Load the test dataset
+    data(iris)
+    # rename the dataset
+    dataset <- iris
+
+When you run these lines, you’ll see that the top right window (the ENVIRONMENT window) changes, showing you the variables that have been created.  You can click on them to view them, and if they get changed or modified, you have easy access to see what happened.  This is why programming with an IDE is so much better than the “old fashioned” way!
+
+If you do click on either one (they’re the same, we just renamed the iris data to dataset) you’ll see that this is a table of data on petal and sepal length and width.  The data also indicates which species had which values.  Sounds like a perfect training set to create a neural network that can identify a species based on the petal and sepal size, doesn’t it?  To return to your script you can use the tabs at the top left; “dataset” is the one you just opened, “untitled1” is your script.
+
+Speaking of which – let’s save our progress so far.  Use the FILE -> SAVE menu option to save your script to your desktop.  I called mine “ANN.R” but you can call yours anything you like.
+
+Now that we have the data, let’s break it into training and testing groups.  Recall that we train our ANN with part of a known data set, and then test it with the other part.  It’s a rule of thumb to use 80% to train and 20% to test, but your mileage will vary extensively depending on how much data you have.  More data is always better when training a neural network!  Go ahead and add these lines:
+
+    # create a list of 80% of the rows in the dataset
+    index <- createDataPartition(dataset$Species, p=0.80, list=FALSE)
+
+    # select 20% of the data for validation
+    validation <- dataset[-index,]
+
+    # use the remaining 80% of data to train the network
+    training <- dataset[index,]
+
+Let’s walk through these one line at a time.
+
+The first command creates an index of the rows by random sampling.  If you run the line and then click on the index variable in the ENVIRONMENT tab, you’ll see what I mean – it’s just a list of row numbers.  The variables also tell you how many members there are, so the full dataset has “150 observations”, while our index only contains 120 entries – which is 80%.
+
+The second line uses the index we created and selects all the lines that do NOT match those row ID’s – that’s done by the minus sign in the “dataset[-index,] command.  So the 20% of the dataset ends up in the “validation” variable.  Click on it to see!
+
+NOTE:  this is an exercise in ANN construction rather than a full R tutorial.  If you are not familiar with R, you should consider taking a course in it – it’s extremely useful for statistical analysis, and it’s probably the absolutely best graphing application there is, thanks to the ggplot2 library that we’ll be using!
+
+The third command does the reverse of what the second line did – it adds the 80% of the rows in the index to the “training” variable.
+
+DATA EXAMINATION
+
+Before we move on, it is useful to collect some basic information about the dataset.  Add the following lines to your script and run them:
+
+    # summarize the class distribution
+    percentage <- prop.table(table(training$Species)) * 100
+    cbind(freq=table(training$Species), percentage=percentage)
+
+The summary of the class distribution outputs this into the Console on the bottom left:
+
+    > # summarize the class distribution
+    > percentage <- prop.table(table(training$Species)) * 100
+    > cbind(freq=table(training$Species), percentage=percentage)
+               freq percentage
+    setosa       40   33.33333
+    versicolor   40   33.33333
+    virginica    40   33.33333
+
+This tells us that the three different species are equally represented in the training data.  Now let’s do a basic summary of the actual measurements with these lines:
+
+    # summarize attribute distributions
+    summary(training)
+
+The output to the console for this command is:
+
+      Sepal.Length    Sepal.Width     Petal.Length    Petal.Width          Species
+     Min.   :4.300   Min.   :2.000   Min.   :1.100   Min.   :0.100   setosa    :40
+     1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300   versicolor:40
+     Median :5.800   Median :3.000   Median :4.250   Median :1.300   virginica :40
+     Mean   :5.814   Mean   :3.038   Mean   :3.753   Mean   :1.189
+     3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800
+     Max.   :7.700   Max.   :4.100   Max.   :6.900   Max.   :2.500
+
+It might be easier if we visualize the data, however, so that we can get an idea of the differences between species.  Let’s try constructing some univariate plots.  Add the following lines to your script and run them:
+
+    # Visualize Dataset:  Univariate Plots
+
+    # split input and output
+    x <- training[,1:4]
+    y <- training[,5]
+
+    # boxplot for each attribute on one image
+    par(mfrow=c(1,4))
+    for(i in 1:4) {
+      boxplot(x[,i], main=names(iris)[i])
+    }
+
+In the first set of commands we split the training data into the numeric data (the sepal and petal measurements) to use as our “X”, and the classification as our “Y”.  The next set of commands generates a single graph with four whisker boxplots.  It’s much easier to see the distribution of the data on this plot!
+
+Let’s repeat our plots, this time separating the species so that we can see the distribution of variables for each species:
+
+    # box and whisker plots for each attribute
+    featurePlot(x=x, y=y, plot="box")
+
+When you run these lines, you see a new plot generated
+
+From this plot you can see that there is overlap in both the sepal length and sepal width between species, but the petal length and width seems to be clearly distinct between the three.  This kind of separation suggests that the data will be a good fit for training and using an ANN.
+
+Now let’s define some parameters for our ANN.  We’ll take the training data and subdivide it one more time, into 10 sets.  We’ll test out a few different ANN algorithms with this data, running each test 3 times to get a consensus of which algorithm we should use for the “real” ANN.  Note that you don’t have to do this – you could just use the full training data and test the algorithms – but this acts almost like a bootstrap process, checking the training data for sensitivity at certain rows.
+
+    # Set Parameters:
+    # Run algorithms using 10-fold cross validation
+    control <- trainControl(method="cv", number=10)
+    metric <- "Accuracy"
+
+Once you have entered and run these lines, our test parameters are ready to go.  The “Accuracy” metric is the variable we will use to evaluate each test.  You don’t have to use a variable for this, but it makes it easier to change for multiple tests if we use a variable rather than hard-coding it into each test.
+
+MODEL TESTING
+
+Now let’s go ahead and test four different ANN methods:
+
+    - Linear Discriminant Analysis (LDA)
+    - k-Nearest Neighbors (kNN)
+    - Support Vector Machines (SVM)
+    - Random Forest (RF)
+
+These methods differ in their nature of the modelling engine – for example, the LDA method uses a  simple linear model, SVM and RF use complex linear models, and kNN uses a nonlinear model.  While each of these methods should work, it’s likely that one of them will be slightly better in terms of predictive accuracy – which is why we’re testing them all.  Go ahead and add these lines to your script and run them:
+
+    # Test our 4 different methods:
+
+    # a) linear algorithm:  LDA
+    set.seed(7)
+    fit.lda <- train(Species~., data=dataset, method="lda", metric=metric, trControl=control)
+
+
+    # b) nonlinear algorithm: kNN
+    set.seed(7)
+    fit.knn <- train(Species~., data=dataset, method="knn", metric=metric, trControl=control)
+
+    # c) complex linear algorithms:
+    # SVM
+    set.seed(7)
+    fit.svm <- train(Species~., data=dataset, method="svmRadial", metric=metric, trControl=control)
+
+    # Random Forest
+    set.seed(7)
+    fit.rf <- train(Species~., data=dataset, method="rf", metric=metric, trControl=control)
+
+You should now see that there are four different “fit” variables in the ENVIRONMENT tab, one for each of the networks.  Each of those contains the accuracy – let’s check it out with this command:
+
+    # summarize accuracy of models
+    results <- resamples(list(lda=fit.lda, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+    summary(results)
+
+The first line generates a table of the results, and the second line summarizes them to the console.  The line we are looking for most specifically is the “Accuracy” line, which will let us know which of our methods performed best:
+
+    > summary(results)
+
+    Call:
+    summary.resamples(object = results)
+
+    Models: lda, knn, svm, rf
+    Number of resamples: 10
+
+    Accuracy
+
+    Min.   1st Qu.    Median      Mean 3rd Qu. Max. NA's
+    lda 0.9333333 0.9500000 1.0000000 0.9800000       1    1    0
+    knn 0.8666667 0.9333333 1.0000000 0.9666667       1    1    0
+    svm 0.8000000 0.9333333 0.9666667 0.9466667       1    1    0
+    rf  0.8666667 0.9333333 0.9666667 0.9600000       1    1    0
+
+    Kappa
+        Min. 1st Qu. Median Mean 3rd Qu. Max. NA's
+    lda  0.9   0.925   1.00 0.97       1    1    0
+    knn  0.8   0.900   1.00 0.95       1    1    0
+    svm  0.7   0.900   0.95 0.92       1    1    0
+    rf   0.8   0.900   0.95 0.94       1    1    0
+
+From this it’s pretty clear that the linear approach of the LDA was best able to model our data, with a mean accuracy of 98% - pretty good considering how few data points we used!  That isn’t to say that the other methods didn’t also do well – anything above 90% is acceptable, and all four methods were 94% or higher.
+
+The real test, of course, is to take our test data and see how well the model predicts the species for the 20% of the original dataset that we excluded from the training data.  Since we already have the model constructed (it’s in fit.lda), we can run the predict command:
+
+    # estimate skill of LDA on the validation dataset
+    predictions <- predict(fit.lda, validation)
+
+This stores the predictions for the validation data in the predictions variable.  Let’s print out the matrix and see how we did:
+
+    confusionMatrix(predictions, validation$Species)
+
+    Confusion Matrix and Statistics
+
+                Reference
+    Prediction   setosa versicolor virginica
+    setosa         10          0         0
+    versicolor      0          9         1
+    virginica       0          1         9
+
+    Overall Statistics
+                   Accuracy : 0.9333
+                     95% CI : (0.7793, 0.9918)
+        No Information Rate : 0.3333
+        P-Value [Acc > NIR] : 8.747e-12
+                      Kappa : 0.9
+     Mcnemar's Test P-Value : NA
+
+    Statistics by Class:
+
+                       Class: setosa Class: versicolor Class: virginica
+  Sensitivity                 1.0000            0.9000           0.9000
+  Specificity                 1.0000            0.9500           0.9500
+  Pos Pred Value              1.0000            0.9000           0.9000
+  Neg Pred Value              1.0000            0.9500           0.9500
+  Prevalence                  0.3333            0.3333           0.3333
+  Detection Rate              0.3333            0.3000           0.3000
+  Detection Prevalence        0.3333            0.3333           0.3333
+  Balanced Accuracy           1.0000            0.9250           0.9250
+
+Our accuracy is 93% - still pretty good!
+
+Now, how would we go about getting an answer from just one piece of data?  We can use the predict function with the fit.lda model and just feed it values.  For example, if we wanted to give the model just one value from the validation data we could do this:
+
+    # Get a prediction on just one (row 2 in validation data)
+    predict(fit.lda, validation[2,])
+
+This sends just row 2’s data and tells us that this is from the species setosa.  We’re still using existing data, however – let’s make up some new data, say, something one of our researchers acquired from the field, and test *that*.  To do that we’ll have to create a new data frame containing the data:
+
+    field.data <- data.frame("Sepal.Length"=7, "Sepal.Width"=5.1, "Petal.Length"=3.2, "Petal.Width"=0.7)
+
+Now we run the prediction on this new data:
+
+    predict(fit.lda, field.data)
+
+The answer prints out in the console – this field sample is from species setosa!
+
+Note:  this exercise was adapted from:
+
+https://machinelearningmastery.com/machine-learning-in-r-step-by-step/

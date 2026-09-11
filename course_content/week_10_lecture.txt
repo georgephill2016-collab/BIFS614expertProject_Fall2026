@@ -1,0 +1,95 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 10
+TITLE: KMERS
+
+In bioinformatics, a k-mer is a sequence of length k, taken from a larger fragment of sequence data.  Any sequence can be broken into a number of k-mers, where the number of k-mers is dependent on both the size of the original sequence and the size of k.  For example, given the sequence ACTGATAT, what k-mers of size 3 can we identify?  We essentially use a window of size three and move from the first position to the second etc.:
+
+    ACT
+    CTG
+    TGA
+    GAT
+    ATA
+    TAT
+
+Notice that these are all unique, which won’t always be the case – with a larger sequence you’ll inevitably find that certain kmers will occur more than once.  For example, if our sequence instead was:
+
+    ACTTATAT:
+
+    ACT
+    CTT
+    TTA
+    TAT
+    ATA
+    TAT
+
+The 4th and 6th kmers are identical for this sequence.  So if we were to create a table with a kmer count, we would have:
+
+    For the sequence ACTTATAT:
+          Kmer    Count
+          ACT     1
+          CTT     1
+          TTA     1
+          TAT     2
+          ATA     1
+
+You can imagine that as the sequence you are examining gets larger, the number of kmers will increase – both the unique kmers (although there is a logical limit to this, as there are only so many combinations of four bases that are possible) as well as the number of each unique kmer.
+
+So – now that we can count kmers, what can we do with them?  It turns out that kmer frequencies can be extremely useful for bioinformatics!  If we plot a graph of kmer count vs kmer distribution (which is called the kmer spectrum), we can see that most species have a unimodal distribution – meaning that there will be a single peak to the plot:
+
+Figure :  Adapted from Wikipedia, https://en.wikipedia.org/wiki/K-mer#In_Bioinformatics_Pipelines
+
+This is not the case for mammals, interestingly enough, which all exhibit a multimodal distribution – but even within those genomes there can be specific regions that exhibit a unimodal model.  Note that the spectrum may differ with different values of k, but if we take that into account we can use kmer frequencies to establish a type of unique signature, or fingerprint, for each species.
+
+Let’s take a look at some real-world applications of Kmer analysis in bioinformatics:
+
+GENOME ASSEMBLY VIA KMERS
+
+In next-gen sequencing (e.g. Illumina short-read technology), the read length is typically around 100bp (which is equivalent, then, to a kmer of size 100, or a 100-mer).  In a shotgun sequencing reaction, where we are trying to reconstruct the genome of an organism using these short reads, only a small percentage of the 100-mers that actually occur in the genome will be reproduced through the sequencing process – largely due to coverage gaps and sequencing errors that are inherent in the technology.  This means that a De Bruijn graph used to assembly the genome from the reads cannot be constructed (since one of the caveats of De Bruijn graph building is that all possible kmers must be present in order for the assembly to take place via kmer overlap).
+
+The solution is to take the sequence reads (the 100-mers) and break them into smaller kmers – kmers of a size (say, 4) such that all possible kmers present in the genome of that size will be represented in the new kmers derived from the sequence data:
+
+Figure :  Adapted from:  https://en.wikipedia.org/wiki/K-mer#/media/File:K-mer-example.png
+
+After breaking the 100-mers into 4-mers, any 4mers that are present more than once are “uniqued” so that only one instance of them is present in the resulting 4mer set.  Then the se 4mers can be assembled into a contiguous sequence.
+
+Not only does this approach make rapid genome assembly possible despite the errors inherent in the sequence technology, the process is greatly simplified computationally – processing millions of 4mers is still less computational intense than processing tens of thousands of 100mers.  An additional advantage is that reads which have a kmer spectrum that does not conform to the expected spectrum for whichever species you are sequencing can be excluded as they are most likely the result of contaminants in the sequencing reaction (e.g. if you are sequencing a human genome and the kmer spectrum identifies E. coli reads, you will want to exclude those from the human assembly).
+
+So far we’ve talked about 3mers, 4mers, and 100mers – how does one choose the right value for k when assembling sequence reads into a genome?  The value of k has significant effects on the resulting sequence assembly, and those effects are different for large values of k vs small values:
+
+Lower values of k:
+
+Advantages:
+
+    - Decrease number of edges in the De Bruin graph, which means less memory required for storage
+    - Increase probability of overlap of kmers for De Bruijn graph creation
+
+Disadvantages:
+
+    - Increases the number of vertices which can point at a single kmer, increasing the potential number of paths to traverse (thus more computationally intensive)
+    - The amount of information per kmer is decreased
+    - Decrease the ability to deal with microsatellite or repeat regions
+
+Larger values of k:
+
+Advantages:
+
+    - Fewer vertices in the De Bruijn graph, which means fewer paths to traverse, so computationally faster and less intensive
+    - Larger values of k make it easier to deal with regions containing small repeats
+
+Disadvantages:
+
+    - Increased number of edges in the De Bruijn graph, which means more memory required for storage
+    - Larger values of k increase the risk that the kmers may not overlap, resulting in more small contigs rather than a complete assembly
+
+SPECIES IDENTIFICATION VIA KMERS (including contaminant detection)
+
+Above we mentioned that you can use the kmer spectrum to identify species.  If you were working from a pure culture and simply trying to identify it, you’d be far better off using the 16S rRNA (or 18S if the organism is eukaryotic).  When you are working with an environmental sample, however, or any other mixed population, it may be easier/faster to take shotgun sequence data (rather than PCR amplify and sequence an rRNA) and apply a kmer-based identification approach such as Kraken.  According to the Kraken github page, Kraken uses “exact k-mer matches to achieve high accuracy and fast classification speeds. This classifier matches each k-mer within a query sequence to the lowest common ancestor (LCA) of all genomes containing the given k-mer. The k-mer assignments inform the classification algorithm.”  Essentially this means that Kraken requires a custom kmer database that is trained on existing sequence data from NCBI – a large subset of sequence data is used to develop kmer tables for a variety of values of k and then stored as the custom database relating kmer spectra to species.  In the “old” days (2019), you would have to construct this database yourself, which meant a few days of computer time, downloading chunks of NCBI and then doing kmer counting.  Today you can download the Kraken database from an AWS (Amazon Web Services) site maintained by the software maintainer, which makes setting it up far easier.
+
+One of the most interesting use cases of Kraken is that of full-metagenome reassembly.  While early metagenome studies relied exclusively on 16S sequences, it is becoming more common to combine that approach with a metagenome “genome recovery” approach.  In this type of study, DNA is isolated from an environmental sample (which might be a soil or water sample, or a sample from a patient, e.g. a buccal swab or stool sample) and subjected to shotgun sequencing.  The resulting reads will sequence data from every species present in that sample – conceivably many thousands.  Those reads are first sorted into bins using Kraken, where each bin represents a unique species.  Reads which cannot be uniquely sorted into a bin are placed in a separate bin for unidentified reads.  Then, each bin is treated as a separate genome assembly project and a “complete” (or as complete as possible given the number and quality of reads) is created.  There are many additional steps in this process, including QA/QC at many of the stages – here’s an example workflow from a software pipeline called “metawrap” that automates as much of this as possible:
+
+Figure .  Metawrap Workflow (from https://github.com/bxlab/metaWRAP)
+
+This process of genome recovery has a very different application than the “traditional” metagenome approach, in which the purpose of the study is to classify (identify) the species (or more likely genus given the limitations of 16S) present in the sample and determine their relative abundance.  With the genome recovery approach, instead of identifying hundreds or thousands of species, the genomes of the most prevalent species are reconstructed so that their metabolic potential can be analyzed.  For example, if the most prevalent species have never been cultivated (which applies to many bacterial species), nothing is known about their metabolism or metabolic byproducts.  By reconstructing the genome of these non-cultivatable species, we can do comparative genomics and identify which genes are present based on comparison to known genes.  This then can be imputed to help determine the metabolic profile of the organisms using software that predicts metabolite data from sequence data, such as MelonnPan.
+
+The limitation is that not all of the species will be present in sufficient quantities for this sort of approach to fully recreate more than the top dozen or so most prevalent species.  That being said, recreating the metabolics of the top twelve most prevalent species, some of which may be uncultivable, is exactly the sort of imputation that bioinformatics is best at.

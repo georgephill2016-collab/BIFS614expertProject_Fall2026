@@ -1,0 +1,231 @@
+COURSE: BIFS 614 – Data Structures and Algorithms
+DOCUMENT TYPE: LECTURE
+WEEK: 4
+TITLE: Indexing & Searching, SQL Databases
+
+Genbank is without a doubt one of the world’s largest repositories of sequence data.  You can find sequences there in a variety of ways – for example, if you know the accession number (a unique identifier for each submitted piece of sequence data), you can type that into a search bar and almost immediately retrieve the data.  If you are going in the opposite direction – let’s say you have some sequence data but don’t know what the sequence is – you can put your sequence into the BLAST search window and search the entire database by sequence and find your sequence (and the accession number) that way.  Searching by BLAST takes considerably longer than searching by accession number, but both have been heavily optimized to make finding what you are looking for as quick as possible.
+
+Part of optimizing these searches involves indexing.  In the first example, where you are searching by accession number, the process is very straight-forward:  your query (the accession number) is looked up in a table that contains the accession numbers in one column and a document ID in another.  The accession numbers are sorted alphabetically, which makes it trivial to quickly do the lookup and match the accession number to the document.
+
+HASH TABLES
+
+Searching by sequence, however, is much more challenging.  BLAST does it’s initial matching by searching for K-mers – a sequence word of a given size, say 3 (for protein searching) or 11 (for nucleotide searching) and then extending all the matches in both directions, scoring the alignments and only returning the high-scoring matches (HSPs).  For every K-mer of a given size, there are millions of sequences that match that particular string – think of how many ATGs occur in Genbank, for example (if you don’t know, ATG is the universal START codon, so it’s at the beginning of every gene, and at every other methionine-coding triplet)!  As of 2019 Genbank contained 3.6 trillion bases – searching each sequence entry individually would take a ridiculous amount of time.
+
+So how does Genbank return results so quickly?  It’s not just the number of servers they have – it’s the way the data is stored.  Genbank indexes sequences (not just records, the actual sequences themselves) by creating hash tables.  Let’s walk through an example of what these are, and how we can use them.
+
+Within the sequence below, for example, TTAC is a 4-mer that can be found twice, at positions 3 and 17:
+
+    GCTTACAGATTCAGTCTTACAGATGGT
+
+Obviously searching a short sequence like this is easy.  What we need to do is find all instances of our K-mer (TTAC, in this case) in the entire database – that’s where hashing comes in.  Hashing takes the list of all of the possible K-mers for a given size (e.g. 4 or 11) and then stores the positions where each of those can be found within all sequences – generating a hash table (sometimes called a lookup table).  To make things faster (and more compact), BLAST uses an integer to refer to a given K-mer by its first residue and then stores the positions relative to the integer.  The diagram below displays a hash table scheme for a few protein sequence 10-mers:
+
+IMAGE: Original Sequences Mapped to a Hash Table:
+
+The first letter of each sequence determines its location in the hash table.
+
+ORIGINAL SEQUENCES:
+
+Index  Sequence
+0      HMERMIKIHH
+1      MERMIKIHHQ
+2      ERMIKIHHQE
+3      RMIKIHHQEL
+4      MIKIHHQELG
+5      IKIHHQELGC
+6      KIHHQELGCC
+7      IHHQELGCCI
+8      HHQELGCCII
+9      HQELGCCIIW
+
+HASH TABLE:
+
+Hash Index  Letter  Stored Sequence(s) and Original Index
+0           A
+1           R       RMIKIHHQEL: 3
+2           N
+3           D
+4           C
+5           Q
+6           E       ERMIKIHHQE: 2
+7           G
+8           H       HMERMIKIHH: 0, HHQELGCCII: 8, HQELGCCIIW: 9
+9           I       IKIHHQELGC: 5, IHHQELGCCI: 7
+10          L
+11          K       KIHHQELGCC: 6
+12          M       MERMIKIHHQ: 1, MIKIHHQELG: 4
+13          F
+14          P
+15          S
+16          T
+17          W
+18          Y
+19          V
+
+Sequence 0, HMERMIKIHH, maps to hash index 8 (H).
+Sequence 1, MERMIKIHHQ, maps to hash index 12 (M).
+Sequence 2, ERMIKIHHQE, maps to hash index 6 (E).
+Sequence 3, RMIKIHHQEL, maps to hash index 1 (R).
+Sequence 4, MIKIHHQELG, maps to hash index 12 (M).
+Sequence 5, IKIHHQELGC, maps to hash index 9 (I).
+Sequence 6, KIHHQELGCC, maps to hash index 11 (K).
+Sequence 7, IHHQELGCCI, maps to hash index 9 (I).
+Sequence 8, HHQELGCCII, maps to hash index 8 (H).
+Sequence 9, HQELGCCIIW, maps to hash index 8 (H).
+
+Hashing provides us with a lookup table, or hash table, that tells us where we can find specific sequence words, which greatly speeds up our searching process – effectively serving as an index for sequence data.
+
+For more information on hashing as it is applied to bioinformatics data, please see: https://health.uconn.edu/bioinformatics/wp-content/uploads/sites/162/2018/10/Hashing_2019.pdf
+
+K-mers are important for a variety of reasons in bioinformatics – we’ll go into more depth on them in Week 9.
+
+KEYWORD TREES
+
+Even with Hash Tables, searching for exact patterns can take a significant amount of time.  Fortunately, there are other approaches we can use to speed up searching.  One common one is to use a keyword tree. Keyword trees essentially make a chain where branches occur at each point where the items being indexed have differences. Let's say we want to build a keyword tree for two words, Apple and Application. The first four letters are identical, but the words start differentiating at the fifth letter, so our keyword tree would look like the image on the left, below.
+
+Notice how the common elements are shared in the tree (the first four letters:  A, P, P, L).  After the letter “L” we have a branching point in the tree, since that’s where the words start to differentiate from one another.
+
+The root doesn’t have to have just a single starting point – that would make the tree useless for any word that didn’t start with “A”!  Words starting with a different letter (say BALE) would have their own branch in this tree, as in the image in the right  below:
+
+IMAGE: Tree Example
+
+LEFT TREE:
+
+ROOT
+└── A
+    └── P
+        └── P
+            └── L
+                ├── E → End of word: APPLE
+                └── I
+                    └── C
+                        └── A
+                            └── T
+                                └── I
+                                    └── O
+                                        └── N → End of word: APPLICATION
+
+Words stored:
+APPLE
+APPLICATION
+
+
+RIGHT TREE:
+
+ROOT
+├── A
+│   └── P
+│       └── P
+│           └── L
+│               ├── E → End of word: APPLE
+│               └── I
+│                   └── C
+│                       └── A
+│                           └── T
+│                               └── I
+│                                   └── O
+│                                       └── N → End of word: APPLICATION
+└── B
+    └── A
+        └── L
+            └── E → End of word: BALE
+
+Words stored:
+APPLE
+APPLICATION
+BALE
+
+As you can imagine, you can extend this infinitely.  Luckily in bioinformatics there are only 4 DNA bases and 20 (ish) amino acids, so keyword trees for bioinformatics are manageable.  Keyword trees store a set of keywords in a rooted labeled tree, where each edge (connecting line) is labeled with a letter from the alphabet. Two edges (lines) coming from the same vertex, or node, will have different labels (e.g. A or B). The important thing is that every keyword stored in this tree can be spelled on a specific, individual path from the root to an end-point, or "leaf". So to get to a specific word (e.g. when searching), you just follow the path from the root, making the appropriate decisions where applicable (e.g. is it an E or an I). Once you reach an end leaf, your search is done.
+
+SUFFIX TREES
+
+Another way to index information is to use a suffix tree.  A Suffix tree is similar to a keyword tree, except that the common edges in a path are collapsed:
+
+IMAGE: Keyword Tree Compared with a Suffix Tree
+
+Sequence: ATCATG
+
+The tree contains the following suffixes:
+
+Suffix 1: ATCATG
+Suffix 2: TCATG
+Suffix 3: CATG
+Suffix 4: ATG
+Suffix 5: TG
+Suffix 6: G
+
+
+(a) KEYWORD TREE
+
+In the keyword tree, each character has its own edge.
+
+ROOT
+├── A
+│   └── T
+│       ├── G → Suffix 4: ATG
+│       └── C
+│           └── A
+│               └── T
+│                   └── G → Suffix 1: ATCATG
+├── T
+│   ├── G → Suffix 5: TG
+│   └── C
+│       └── A
+│           └── T
+│               └── G → Suffix 2: TCATG
+├── C
+│   └── A
+│       └── T
+│           └── G → Suffix 3: CATG
+└── G → Suffix 6: G
+
+
+(b) SUFFIX TREE
+
+In the suffix tree, consecutive edges that do not branch are combined.
+
+ROOT
+├── AT
+│   ├── G → Suffix 4: ATG
+│   └── CATG → Suffix 1: ATCATG
+├── T
+│   ├── G → Suffix 5: TG
+│   └── CATG → Suffix 2: TCATG
+├── CATG → Suffix 3: CATG
+└── G → Suffix 6: G
+
+Suffix trees have the advantage that they can be built far more quickly and easily than keyword trees – a keyword tree requires quadratic complexity, while a suffix tree requires only linear complexity.  The disadvantage is that suffix trees can take significantly more space to store.
+
+To search a keyword (or suffix) tree, you "thread" your way through the text of the tree, comparing the text you are searching with the options given in the tree. Threading is considered "complete" when you reach a "leaf" (endpoint) in the tree, at which point the pattern search is complete.
+
+This works great for exact pattern matching – but since biology is a "wet" (some some "squishy") science, there is considerable diversity and divergence caused by mutations. As such, exact searching isn't always what we are looking for – often times a heuristic approach is more appropriate, allowing us to find approximate matches. This is critical when you are looking for genes that are similar to your "gene of interest" – perhaps you are looking for genes with similar yet different functions, or homologous genes in different organisms.
+
+RELATIONAL (SQL) DATABASES
+
+Large amounts of tabular data are typically stored in a relational database, commonly on a server.  If that database uses the standard SQL, or Structured Query Language, then it is a SQL server.  There are many different SQL server packages around, including Oracle and Microsoft’s commercial versions, but most bioinformaticists (unless they work for a big pharmaceutical company) will use one of the freeware variants.  MySQL, MariaDB, and PostgreSQL are all excellent SQL database tools that you can use at no cost, and since they are all based on the SQL language, once you know how to work with one of them, you will (with minor differences) be able to work with any of them.
+
+USE CASES
+
+What, exactly, are relational databases, and why would we use one in bioinformatics?  According to the Oracle web site:
+
+A relational database is a type of database that stores and provides access to data points that are related to one another. Relational databases are based on the relational model, an intuitive, straightforward way of representing data in tables. In a relational database, each row in the table is a record with a unique ID called the key. The columns of the table hold attributes of the data, and each record usually has a value for each attribute, making it easy to establish the relationships among data points.
+
+(https://www.oracle.com/in/database/what-is-a-relational-database/)
+
+Relational databases keep the logical data structure separate from physical storage – for example, if you rename a database file, the tables stored within it don’t change.  The relationship between the tables inside the database, if you will, is the critical part – rather than store everything in one huge spreadsheet, you break the data logical tables of data.  You use keys and indexes within tables – and between tables - to make it easy and fast to search and sort the data.  Relational database ideal when your data matches several or more of the following criteria:
+
+    - Multiple simultaneous changes to data (concurrency)
+    - Data changes on a regular basis
+    - Large data sets where you only need some observations/variables
+    - Share huge data set among many people
+    - Rapid queries with no analysis
+    - Web interfaces to data, especially dynamic data
+
+Bioinformatics data matches all of the criteria above.  For example, the UCSC Genome Browser contains a vast wealth of information beyond the “simple” sequence data of the human genome.  There are tables with containing information about genes, annotations on those genes, annotations on the actual sequence data (e.g. CpG islands), homologs, literature references – everything you see when you browse the genome is contained in these tables.  Separate tables are used for specific information – this makes the information easier to search and index.
+
+Take a look at this web site – it lists all of the individual tables used for the UCSC genome:
+
+    https://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/
+
+You can imagine how much of a data disaster this would be if you had all of this data in a single table (e.g. an Excel spreadsheet)!
+
+If you poke around UCSC’s site you will see that they use a successor to MySQL (one of the older, more robust open-source SQL databases) called MariaDB.  MariaDB is one of the friendlier, yet more powerful, packages, and it’s what you’ll be using for one of your homework assignment this term.
