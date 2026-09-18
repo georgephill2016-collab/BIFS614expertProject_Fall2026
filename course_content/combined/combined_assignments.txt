@@ -1,1 +1,476 @@
+<<< START OF BIFS 614 ASSIGNMENT 01 >>>
+
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 01- Algorithms & Data Structures
+
+INSTRUCTIONS: Answer the questions to the best of your ability.  You must show all work if you want full credit.  Citations must be used, especially for AI (e.g., which AI, which version, what was your prompt) if you want full credit.
+
+Question 1 (5 pts):
+Write the line of code that would install the package ggplot2 in R.
+
+Question 2 (5 pts):
+What is a BAI file?
+
+Question 3 (10 pts):
+Compare and contrast VCF and GFF files.
+
+Question 4 (10 pts):
+Compare & Contrast FASTA and FASTQ files.
+
+Question 5 (10 pts):
+What is BigO?
+
+Question 6 (10 pts):
+What are comment lines in an algorithm?  When should they be used?
+
+Question 7 (25 pts):
+Convert the attached to a fasta file and include it as an attachment to this homework.  Explain how you did this and what the differences are.  Was any information lost in the conversion?
+
+    @SRR396637.sra.1 HWI-EAS137R_0379:3:1:8738:1094 length=100
+    CGGGCTGGTAGCTGTAGTACAGCGGCTTGATGCCGAACTCGTCGCGCAGCAGGGGCAATTGCCGGGTCTGCGGGCCCCCGCTGGCGAGGGCTTACCTGCC
+    +SRR396637.sra.1 HWI-EAS137R_0379:3:1:8738:1094 length=100
+    EGDEDGGBGB3F=B>CE;CE?AFFAC<ACA<?EBE:-::=B=37>08)57-<6;)=-7)76>=9;<'>1?<8)1%@?A3@A6B=@A##############
+    @SRR396637.sra.2 HWI-EAS137R_0379:3:1:4414:1102 length=100
+    TCAATATGCTTGAGGTCCGACGGCGACATGTCGAACTGCCAACAATCGTTGCTGTGCTCAGCCTGGAACCGAGCTGCGCCTGGCTCCCGGGACAGTTGAG
+    +SRR396637.sra.2 HWI-EAS137R_0379:3:1:4414:1102 length=100
+    GGDGE<GDGBGG8GGBGGDBGGGBG3DC<GAGF<AB?DBDA>3+CA?FECGGGG>DEA=2FBE3EGD->GB8D+3+87:)AECC3B<AFB?+>*B87?2:
+    @SRR396637.sra.3 HWI-EAS137R_0379:3:1:6247:1095 length=100
+    CGAATGCGTGGCGGAGCGCACCCGAGGCGCCAGCCATCGACCATCCCGAACGTGCCGATAGAGCGAACTCCGAGCGAGGGCCCCCGCTTCGGCCATAGCT
+    +SRR396637.sra.3 HWI-EAS137R_0379:3:1:6247:1095 length=100
+    GGG@DGGGBGGGGDDDGGGBIIBHFGED@GE8AFE?;EA?CC@1EAAA=8DBBDDGD>?@?79B>9+=8=AA=BB?########################
+    @SRR396637.sra.4 HWI-EAS137R_0379:3:1:9438:1099 length=100
+    GCCTGCTTGGCGACCAGGGACTTCAGATCGGCAGTCGCCTGAGGGGCCGGGTCGTCTGCGCACTGGCGGCGCAGGTCCTCGGCCCCGGCCGGCAGGGGGC
+    +SRR396637.sra.4 HWI-EAS137R_0379:3:1:9438:1099 length=100
+    GGDBGB@-FEEF<CE3?BD:>99:5?80AB-6<?1AE28?F=*AE;=9,?+9<</8<<<=20?0=BBB@BAA4B##########################
+    @SRR396637.sra.5 HWI-EAS137R_0379:3:1:14223:1096 length=100
+    GGGCTTCCAGCAGGTTGATCCCGACCAGCAGCCAGAACAGGCCGATCATCACCACGGCGAAGCTGACGTAGTGGTCGAACAGGACGCTGACCAGCGCCGC
+    +SRR396637.sra.5 HWI-EAS137R_0379:3:1:14223:1096 length=100
+    I??IIGGIIIIHIHIIIIGIIIHIII>II8GGGGGC+E2E@CCB:BGD<D8GB<DD>@ED-?@<E<2>)-=;??<C?C8A=?--A?B9?4=+(<<<@==B
+    @SRR396637.sra.6 HWI-EAS137R_0379:3:1:15693:1098 length=100
+    GCGCGGCGAAACCTAGCGCAGGCCGCGCTTGGCTTGGTCCCGCTCGCGGAGAGCGTTGCACACCCGGGGCGGGGGCCAGGGACGGGCGGGGAGCCGGCAC
+    +SRR396637.sra.6 HWI-EAS137R_0379:3:1:15693:1098 length=100
+    DFB<8FF:A-7?B6BGGFD<<D8ADEC??-B#####################################################################
+
+Question 8 (25 pts):
+For a given algorithm, how will BigO change if the algorithm is run on different hardware (e.g. a faster processor)?  How will it change if a larger data set is run through the algorithm?  Explain.
+
+<<< END OF BIFS 614 ASSIGNMENT 01 >>>
+
+<<< START OF BIFS 614 ASSIGNMENT 02 >>>
+
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 02- Indexing and Searching
+
+Question 1 (20 pts):
+Define a heuristic algorithm.  When would we use one and why?  List at least 3 types of problems in bioinformatics that we discussed as requiring heuristic approaches.
+
+Question 2 (20 pts):
+If you have 45 taxa, how many possible rooted trees can you construct?
+
+Question 3 (20 pts):
+Given the sequence AATTACAGGCCGAGACAGATA find all kmers of size 4.  Create a table that displays their counts and positions.
+
+Question 4 (20 pts):
+Describe how a hash function works, using both descriptive text and a diagram.  Provide enough detail so that someone could derive pseudocode from your description.
+
+Question 5 (20 pts):
+Describe how maximum parsimony works.  Provide enough detail so that someone could derive pseudocode from your description.
+
+<<< END OF BIFS 614 ASSIGNMENT 02 >>>
+
+<<< START OF BIFS 614 ASSIGNMENT 03 >>>
+
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 03-  Data Parsing
+
+INSTRUCTIONS
+
+You have ONE WEEK to complete this homework.  You must show ALL OF YOUR WORK for full credit.  This includes any prompts/corrections and version labels for any AI assistance.
+
+Each answer requires you to provide a solution using Linux.  Editing files by hand will not be accepted.
+
+Question 1 (10 pts):
+You have a folder with 10 files in it.  What command would you use to find the file(s) containing the text “bioinformatics”?  Give a complete example.
+
+Question 2 (15 pts):
+You have a command that outputs a summary of your data.  How would you:
+    1. Redirect that output to a different program
+    2. Save that output to a file
+Give complete examples for both.
+
+Question 3 (15 pts):
+You have a text file that contains the word “banana” in several places.  How would you replace the word “banana” with “minions” in the entire document with a single command?  Provide a complete example.
+
+Question 4 (15 pts):
+You have a tab-delimited table of SNP data and you want to summarize it to find only lines that contain a specific word in column 1 and a specific value in column 2.  How would you do this with a single command?  Provide a complete example.
+
+Question 5 (15 pts):
+You have three text files that you want to combine into a single text file by appending them one after the other.  Which command would you use?  Provide a complete example.
+
+Question 6 (15 pts):
+Write the linux command you would use to convert a FASTQ file to a FASTA file.  Explain what each step does.
+
+Question 7 (15 pts):
+You have a VCF file and you want to find out how many A to G mutations there are on chromosome one.  What command would you use for this?  Provide a complete example.
+
+<<< END OF BIFS 614 ASSIGNMENT 03 >>>
+
+<<< START OF BIFS 614 ASSIGNMENT 04 >>>
+
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 04-  SQL and MariaDB
+
+INSTRUCTIONS: For this homework you will be installing the MariaDB database application on your linux installation, creating a database and some tables.  In order to receive full credit for your work, you must show all commands used and all outputs.
+
+Question 1 (10 pts):
+Install MariaDB on your VirtualBox Linux system using the command line.  Use the following  three commands to do so.  Each command must be entered as a SINGLE LINE in ubuntu.  Submit a screen capture of your terminal window after each step for full credit:
+
+    sudo apt update
+    sudo apt install mariadb-server
+    sudo mysql_secure_installation
+
+NOTE:  after the third command you will be asked to enter the current password for root.  You should use “ubuntu” (without the quotes).  Then proceed to answer Y to all of the following questions.
+
+Question 2 (10 pts):
+Test whether or not your MariaDB server is up and running by entering the following command.  Submit a screen capture of the resulting output and press “q” to return to the command prompt:
+
+    sudo systemctl status mariadb
+
+Question 3 (10 pts):
+Log in to your SQL database.  As before submit a screen capture for full credit:
+
+    sudo mysql
+
+Question 4 (10 pts):
+At the MariaDB> prompt, create a new database using the following command, using your first name as the name of your database (I’ll us my name in the example):
+
+    create database WOLFGANG;
+
+Notice the semicolon at the end of the command.  All SQL commands end with a semicolon.  Now type this command to list all of the existing databases:
+
+    show databases;
+
+Notice that MariaDB (as any SQL database) has created other databases as support structure.  As before submit a screen capture of the resulting output.
+
+Now let’s create a user for the new database using the following command (again, I’m using the database WOLFGANG; you should use the one you created above, and use your name for the user, not mine):
+
+    create user 'wolfgang'@localhost identified by 'mypassword';
+
+Let’s make sure the user was created by entering this command:
+
+    select user from mysql.user;
+
+This command looks at the mysql database (which you’ll recall was listed when you listed the databases) and specifically shows the contents of the table user – which is why we used mysql.user above; it specifies database.table.
+
+MariaDB now has a user, but that user has no privileges.  We need to specifically tell MariaDB which databases that user can access and what level of user they are, and we can do that with this command:
+
+    grant all privileges on WOLFGANG.* to wolfgang@localhost;
+
+This gives the user wolfgang all privileges to the database wolfgang, for all tables (wolfgang.* = wolfgang database, all tables).
+
+Whenever permissions are updated on a SQL database it’s a good idea to refresh the privileges in memory; you can do that with this command:
+
+    flush privileges;
+
+Now let’s see if everything worked.  Enter this command to show all of the privileges for your user (again, replacing the username with the one you created) – take a snapshot and include it as before:
+
+    show grants for wolfgang@localhost;
+
+Now let’s create some bioinformatics data tables in our SQL database.  In most cases you’ll be interacting with SQL programmatically (e.g. you can use python to read and write to SQL, to create databases, users, and tables, etc.) but in order to learn the proper syntax we’ll do a few here directly in the SQL command line interface.
+
+Before we can create tables we have to tell SQL which database we want to use.  We can do that with the following command (as before, substitute the name of the database you created above):
+
+    use WOLFGANG;
+
+Notice that since I created my database in all caps I have to use that exact case when I invoke it in any commands!
+
+With the database selected, let’s create a tables with the following commands:
+
+    CREATE TABLE Gene(gid INTEGER, name VARCHAR(20), annotation VARCHAR(50), PRIMARY KEY (gid));
+
+This command creates a table, specifying it’s name as well the names of the fields – and the type of information they can include.  The basic syntax is:
+
+    Create table <tablename>(field1name field1type, field2name field2type,…,primary key(fieldname));
+
+We aren’t going to go into all of the specifics, but you should know the different types of fields you can use (e.g. VARCHAR, INTEGER, REAL).  The primary key is the unique identifier for each row in the database and is used for indexing – for more information on this see: https://www.w3schools.com/sql/sql_primarykey.ASP.
+
+You can use the following commands to verify that the tables were created properly:
+
+    show tables;
+    show columns from Gene;
+
+Now let’s manually insert some data into the table.  We’ll use the same basic command that you would use if you were doing this programmatically:
+
+    insert into Gene VALUES(1, "1433E", "enzyme binding");
+
+We are telling MariaDB to add values (not new fields or other things) to the table Gene, then within the parentheses we specify values for each of the defined fields.  Notice we do not reference the fields – you have to use the fields in order of creation, and use valid data types (e.g. INTEGER or VARCHAR).
+
+The real power of a database, however, is querying the data – and to do an example of that we’ll need to add more data.  Let’s add two more genes to our Genes table:
+
+    insert into Gene VALUES(2, "PolA", "dna replication");
+    insert into Gene VALUES(3, "Apob", "enzyme binding");
+    insert into Gene VALUES(4, "PolB", "dna replication");
+
+Now let’s create a second table that stores expression level data:
+
+    CREATE TABLE Expression(gid INTEGER, expression_level INTEGER, PRIMARY KEY (gid));
+
+The new tables needs some expression data.  Notice that the gid (gene ID) is a field in common with the Gene table:
+
+    insert into Expression VALUES(1, 93);
+    insert into Expression VALUES(2, 107);
+    insert into Expression VALUES(3, 1701);
+    insert into Expression VALUES(4, 42);
+
+Looking back at the Gene table you’ll see that we have two genes whose function is “enzyme binding” in our Gene table.  Using the two tables, let’s identify the name of the gene with the highest expression level:
+
+    SELECT name
+    FROM Gene JOIN Expression
+    ON Gene.gid = Expression.gid
+    WHERE expression_level = (select max(expression_level) from Expression);
+
+If everything went well your query returned the name "Apob".  In order to make this query work, we had to join the two tables (Gene and Expression) on their common ID (the gid field) and so that we could find the name of the gene with the highest expression level.  But what if we wanted to narrow this down – let's find the DNA replication gene with the highest expression value:
+
+    SELECT name, expression_level
+    FROM Gene JOIN Expression
+    ON Gene.gid = Expression.gid
+    WHERE annotation="dna replication"
+    ORDER by expression_level DESC
+    LIMIT 1;
+
+Here we are showing both the name and expression level, joining the two tables exactly the same way, but specifying that we want to look at only rows where the function (annotation) is DNA replication.  The tricky bit is we then sort the results by expression level in descending order (that's the 5th line) and limit the results to just the first result.
+
+For the last part of this exercise, perform these two steps and provide screen shots of the results:
+
+Add the following data to your tables.  You'll have to write your own SQL statements.
+
+      gid	name	annotation			gid	expression_level
+
+       5	Rpol	reverse transcriptase		5	05
+
+       6	tel	telomerase			6	120
+
+Now query the database.  List the genes in ascending order of expression level.
+
+<<< END OF BIFS 614 ASSIGNMENT 04 >>>
+
+<<< START OF BIFS 614 ASSIGNMENT 05 >>>
+
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 05- Data Reduction:  PCA in R
+
+INSTRUCTIONS: To complete this homework you will have to use R and R-Studio.  If you do not already have them, they are available at no charge from the following links:
+
+    R download:  https://cran.cnr.berkeley.edu/
+
+    R-Studio download (choose the free desktop version: https://www.rstudio.com/products/rstudio/download2/
+
+In this exercise we will build on the R skills you learned in Week 2 to perform a data reduction analysis using PCA.  Recall that PCA tries to find the axes that contribute the most to the variation in the data – in this case, which axes best separate malignant from benign tumors.
+
+IN ORDER TO RECEIVE FULL CREDIT you are expected to comment each code block, describing what it does in detail.  You will have to research some of the R commands we use on your own so that you understand what they are doing.  You will receive 40 pts for running the exercise and 60 pts for answering the questions at the bottom of the assignment.  You must also submit your R script along with these answers!
+
+Let's get started!
+
+Launch R Studio.  From the FILE menu choose NEW FILE -> RSCRIPT.
+
+Using the hashtag comment indicator, put your name and the date at the top of your script.
+
+The PCA plots we will generate require the factoextra package, so you should install it the same way you have installed R packages previously.  Then add this line to your script to make sure it is loaded into memory for this analysis:
+
+    library(factoextra)
+
+Now let's load the data set.  We will be using the Wisconsin Breast Cancer Data Set from the UCI Machine Learning repository; this dataset contains 30 columns of numerical data that has been extracted from breast cancer slide images.  In order to simplify the exercise, the data has been combined into a single .csv file (wcbd.csv) and is in the CLASS RESOURCES section of the classroom.  Download it and put it on your desktop, then load it into R:
+
+    wbcd <- read.csv('~/Desktop/wcbd.csv')
+
+Also, you should understand what each of the commands here is doing – for example, what is read.csv doing?
+
+HINT:  if you type a command into the console window, RStudio will try to autocomplete the command and offer you guidance on what parameters the command needs – including a link to the built-in help.  Try this out by typing just the first three letters of the order command into the console.
+
+Take a look at the data set.  Notice that the first two columns are not "data" but are descriptive information which we will exclude from the analysis.  That leaves 30 columns of data to reduce down to the most meaningful two which we can plot on a 2D plot.
+
+Now let's proceed.  To make things easier we'll create a new matrix, removing the ID column from the original data set, and then add that column back in but as the row names:
+
+    wbcd.data <- wbcd[,c(2:32)]
+    row.names(wbcd.data) <- wbcd$id
+
+To run the PCA we will invoke the prcomp function on the data:
+
+    wbcd.pca <- prcomp(wbcd.data[c(2:31)], center = TRUE, scale = TRUE)
+
+We now have our principal components.  To display them you can enter this command:
+
+    summary(wbcd.pca)
+
+Plotting the data is a simple matter of feeding the PCA into factoextra along with some parameters.  This works particularly well for this type of data; for general purpose plotting you should explore ggplot2, which is probably the most popular plotting package available for R.  Go ahead
+
+    fviz_pca_ind(wbcd.pca, geom.ind = "point", pointshape = 21,
+    pointsize = 2,
+    fill.ind = wbcd$diagnosis,
+    col.ind = "black",
+    palette = "jco",
+    addEllipses = TRUE,
+    label = "var",
+    col.var = "black",
+    repel = TRUE,
+    legend.title = "Diagnosis") +
+    ggtitle("2D PCA-plot from 30 feature dataset") +
+    theme(plot.title = element_text(hjust = 0.5))
+
+To explain what each command does in the previous block, I will break them down below:
+
+    - fviz_pca_ind : this is used to visualize the individuals in a PCA plot
+
+    - geom.ind = “point” : geom.ind stands for geometry of individuals, and = “point” refers to the command to instruct the plotting function to display individuals as individual points on the graph, without any text labels displayed.
+
+    - pointshape= 21 : this dictates the shape of the data points representing the individuals (data points) on the PCA plot. The number 21 in ggplot2 refers to a circle with a border that is filled in by color.
+
+    - pointsize = 2 : refers to setting the size of the points on the plot
+
+    - fill.ind = wbcd$diagnosis : In this case, fill.ind controls the fill color of the points representing our indivduals, and wbcd$diagnosis refers to our column named “diagnosis” containing our categorical variables of malignant or benign, within our data frame “wbcd”.
+
+    - col.ind = “black” : then refers to specify the color of the individuals on our graph as black
+
+    - palette = “jco” : refers to applying the “JCO” color palette to our PCA plot, which is a color palette based on the style in the Journal of Clinical Oncology. In using this command, we can ensure that our PCA plot is easier to distinguish between different groups/categories.
+
+    - addEllipses = TRUE : this instructs the plotting function to draw ellipses around the groups of data points in our PCA scatter plot to aid in being able to visualize and separate our different groups in our PCA.
+
+    - label = “var” : is used to specify how the variables are identified on the plot
+
+    - color.var = “black” : this specifies that the variable vectors should be colored black
+
+    - repel = TRUE : this is used to prevent overlap of the data points or variables
+
+    - legend.title = “Diagnosis” : this is used to set the title of the legend on the PCA plot to “diagnosis”
+
+    - ggtitle(“2D PCA-plot from 30 feature dataset”) : this sets the title of the PCA plot to 2D PCA-plot from 30 feature dataset
+
+    - theme(plot.title = element_text(hjust = 0.5)) : this is used to customize the appearance and the position of the main title of the PCA plot
+
+Source: Google. (2025). Gemini. [Large language model].
+
+QUESTIONS TO ANSWER:
+
+Question 1 (10 pts):
+How many dimensions are in the original dataset?  How do you know?
+
+Question 2 (10 pts):
+What do the "center = true" and "scale = true" flags tell prcomp to do?
+
+Question 3 (10 pts):
+We used the statement wbcd.data[c(2:31)] in the PCA command.  What does this command do?  Why was it necessary?
+
+Question 4 (10 pts):
+How many principle components did you find in total?
+
+Question 5 (10 pts):
+How much variation do the first and second component combined account for?
+
+Question 6 (10 pts):
+Does the plot you generated show a good separation of malignant from benign cases?  Why or why not?
+
+<<< END OF BIFS 614 ASSIGNMENT 05 >>>
+
+<<< START OF BIFS 614 ASSIGNMENT 06 >>>
+
+COURSE: BIFS 614 – Data Structures & Algorithms
+DOCUMENT TYPE: Homework Assignment
+ASSIGNMENT #: Homework 06- Machine Learning in R
+
+To complete this homework you will have to use R and R-Studio.  If you do not already have them, they are available at no charge from the following links:
+
+R download:  https://cran.cnr.berkeley.edu/
+
+R-Studio download (choose the free desktop version: https://www.rstudio.com/products/rstudio/download2/
+
+In this exercise we will build on the R skills you learned in Week 2 as well as Homework 5 to create a neural network for breast cancer diagnosis.  We will be using the same data set you used in Homework 5 for the PCA analysis.
+
+IN ORDER TO RECEIVE FULL CREDIT you are expected to comment each code block, describing what it does in detail.  You will have to research some of the R commands we use on your own so that you understand what they are doing.  You will receive 50 pts for running the exercise and 50 pts for answering the questions at the bottom of the assignment.  You must also submit your R script along with these answers!
+
+Let's get started!
+
+Launch R Studio.  From the FILE menu choose NEW FILE -> RSCRIPT.
+
+Using the hashtag comment indicator, put your name and the date at the top of your script.
+
+The neural network we will build requires the caret library, so be sure it is install and that you have the proper library load statement at the top of your script:
+
+    library(caret)
+
+Now let's load the data set.  We will be using the same Wisconsin Breast Cancer Data Set from the UCI Machine Learning repository that we used for Homework 5, so you can use the same command to load it as before (make sure the file is still on your desktop first!):
+
+    wbcd <- read.csv('~/Desktop/wcbd.csv')
+    row.names(wbcd) <- wbcd$id
+    wbcd <- wbcd[,c(2:32)]
+
+As before, you should understand what each of the commands here is doing so that you can include that information in a comment above the code!
+
+HINT:  if you type a command into the console window, RStudio will try to autocomplete the command and offer you guidance on what parameters the command needs – including a link to the built-in help.  Try this out by typing just the first three letters of the order command into the console.
+
+You should recall from the exercise we walked through in class how to create an index  of 80% of the data (in this case split by diagnosis) so that we can split the dataset:
+
+    index <- createDataPartition(wbcd$diagnosis, p=0.80, list=FALSE)
+
+To create the training and validation data, we use the index (which represents 80% of the data) to partition the full data set:
+
+    validation <- wbcd[-index,]
+    training <- wbcd[index,]
+
+Let's take a look at the distribution of classes (benign vs malignant) in the training data set:
+
+    percentage <- prop.table(table(training$diagnosis)) * 100
+    cbind(freq=table(training$diagnosis), percentage=percentage)
+    summary(training)
+
+The next thing we're going to do is to save ourselves some time by setting variables for the "trControl" and "metric" flags used by each algorithm – just like we did in the iris dataset example we walked through previously:
+
+    control <- trainControl(method="cv", number=10)
+    metric <- "Accuracy"
+
+Now let's test our four models and compare their accuracy.  Note that each "fit" command must be entered as a single line in R, even though this document wraps them to fit them on the page:
+
+    set.seed(7)
+    fit.lda <- train(diagnosis~., data=wbcd, method="lda", metric=metric, trControl=control)
+    fit.knn <- train(diagnosis~., data=wbcd, method="knn", metric=metric, trControl=control)
+    fit.svm <- train(diagnosis~., data=wbcd, method="svmRadial", metric=metric, trControl=control)
+    fit.rf <- train(diagnosis~., data=wbcd, method="rf", metric=metric, trControl=control)
+    results <- resamples(list(lda=fit.lda, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+    summary(results)
+
+I'm going to use the lda-based model to do my predictions, but you should use whichever was the most accurate based on the above:
+
+    predictions <- predict(fit.lda, validation)
+
+To test how well our predictions worked, we can generate a Confusion Matrix – but if we try that with the current datasets it won't work – the command confusionMatrix wants the variables to both be factors, and the field "diagnosis" in the validation dataset is a variable of type CHAR (this is a common sort of thing you will run into with R).  So we need to use a slightly different command than we did previously to make sure that the comparison is done with the diagnosis from validation as a factor:
+
+    confusionMatrix(predictions, as.factor(validation$diagnosis))
+
+For our last step we'll feed our model some patient data and see what our AI Cancer Diagnostic Neural Network thinks the diagnosis is:
+
+    patient.data <- read.csv("wbcd_new_patients.csv")
+    predict(fit.lda, patient.data)
+
+QUESTIONS TO ANSWER:
+
+Question 1 (10 pts):
+When you looked at the distribution of the classes in your training data, what percentage beneign vs malignant did you have?
+
+Question 2 (10 pts):
+When you ran summary(results) for the various methods of nn model creation, which method was more accurate?  How could you tell?
+
+Question 3 (10 pts):
+What was the accuracy of your neural network when you ran the validation data?  How can you tell?
+
+Question 4 (10 pts):
+Were any of the new patients from the "wbcd_new_patients" data diagnosed as malignant by your neural network?  How can you tell?
+
+Question 5 (10 pts):
+For your new patient analysis, what is the probability of a mis-diagnosis?
+
+<<< END OF BIFS 614 ASSIGNMENT 06 >>>
 
