@@ -1,0 +1,293 @@
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from sentence_transformers import SentenceTransformer
+from pathlib import Path
+import torch
+
+
+
+# ------------------------
+# Open-source model
+# ------------------------
+
+MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
+
+# RAG embedding model:
+# This model turns document chunks and questions into vectors.
+EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+
+# Folder containing your .txt knowledge-base files.
+KNOWLEDGE_BASE_FOLDER = "knowledge_base"
+
+# Number of document chunks to retrieve for each question.
+TOP_K = 3
+
+
+# ------------------------
+# RAG helper functions
+# ------------------------
+
+def chunk_text(text, chunk_size=120, overlap=30):
+    """
+    Split a document into overlapping chunks by word count.
+    """
+    words = text.split()
+    chunks = []
+
+    step = chunk_size - overlap
+
+    for start in range(0, len(words), step):
+        chunk = words[start:start + chunk_size]
+
+        if chunk:
+            chunks.append(" ".join(chunk))
+
+        if start + chunk_size >= len(words):
+            break
+
+    return chunks
+
+
+def load_documents(folder_name):
+    """
+    Load every .txt file from knowledge_base and split it into chunks.
+
+    Returns:
+        chunks: list of text chunks
+        sources: source filename for each corresponding chunk
+    """
+    folder = Path(folder_name)
+
+    if not folder.exists():
+        folder.mkdir()
+        print(f"Created '{folder_name}' folder.")
+        print("Add .txt files to it, then run the program again.")
+        raise SystemExit
+
+    chunks = []
+    sources = []
+
+    for file_path in folder.glob("*.txt"):
+        text = file_path.read_text(encoding="utf-8", errors="ignore").strip()
+
+        if not text:
+            continue
+
+        file_chunks = chunk_text(text)
+
+        for chunk in file_chunks:
+            chunks.append(chunk)
+            sources.append(file_path.name)
+
+    if not chunks:
+        print(f"No .txt files with usable text found in '{folder_name}'.")
+        raise SystemExit
+
+    return chunks, sources
+
+
+def retrieve_context(question, embedding_model, document_embeddings,
+                     document_chunks, document_sources, top_k=TOP_K):
+    """
+    Find the document chunks most similar to the user's question.
+    """
+    question_embedding = embedding_model.encode(
+        question,
+        convert_to_tensor=True,
+        normalize_embeddings=True
+    )
+
+    # Since embeddings are normalized, dot product measures cosine similarity.
+    similarity_scores = torch.matmul(
+        document_embeddings,
+        question_embedding
+    )
+
+    top_k = min(top_k, len(document_chunks))
+
+    top_scores, top_indices = torch.topk(similarity_scores, k=top_k)
+
+    retrieved_chunks = []
+
+    for score, index in zip(top_scores, top_indices):
+        index = index.item()
+
+        retrieved_chunks.append({
+            "text": document_chunks[index],
+            "source": document_sources[index],
+            "score": score.item()
+        })
+
+    return retrieved_chunks
+
+
+def create_rag_prompt(question, retrieved_chunks):
+    """
+    Combine retrieved document chunks with the user's question.
+
+    The instructions reduce the chance that the model answers using
+    unsupported outside information.
+    """
+    context = ""
+
+    for number, chunk in enumerate(retrieved_chunks, start=1):
+        context += (
+            f"\n[Source {number}: {chunk['source']}]\n"
+            f"{chunk['text']}\n"
+        )
+
+    rag_prompt = f"""Instruct: Answer the question using only the context below.
+If the answer is not in the context, say:
+"I don't know based on the provided documents."
+
+Context:
+{context}
+
+Question: {question}
+
+Answer:
+"""
+
+    return rag_prompt
+
+
+# ------------------------
+# Load tokenizer and model
+# ------------------------
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+# Phi-2 does not define a padding token by default.
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    device_map="auto",
+    torch_dtype="auto"
+)
+
+model.eval()
+
+
+# ------------------------
+# Load RAG knowledge base
+# ------------------------
+
+print("Loading knowledge-base documents...")
+
+document_chunks, document_sources = load_documents(KNOWLEDGE_BASE_FOLDER)
+
+print(f"Loaded {len(document_chunks)} document chunks.")
+
+print("Loading embedding model...")
+
+embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+
+print("Creating embeddings for document chunks...")
+
+document_embeddings = embedding_model.encode(
+    document_chunks,
+    convert_to_tensor=True,
+    normalize_embeddings=True,
+    show_progress_bar=True
+)
+
+print("Model loaded successfully.")
+print("RAG knowledge base loaded successfully.")
+print("Type 'quit', 'exit', or 'q' to stop.\n")
+
+
+# ------------------------
+# Interactive Chat loop
+# ------------------------
+
+while True:
+    # Prompt
+    # prompt = "What color is the sky?"
+    prompt = input("Input your question: ").strip()
+
+    if prompt.lower() in ["quit", "exit", "q"]:
+        print("Goodbye!")
+        break
+
+    if not prompt:
+        continue
+
+    # ------------------------
+    # RAG: Retrieve relevant document chunks
+    # ------------------------
+
+    retrieved_chunks = retrieve_context(
+        question=prompt,
+        embedding_model=embedding_model,
+        document_embeddings=document_embeddings,
+        document_chunks=document_chunks,
+        document_sources=document_sources
+    )
+
+    # Print what the RAG system found.
+    print("\nRetrieved context:")
+
+    for number, chunk in enumerate(retrieved_chunks, start=1):
+        print(
+            f"{number}. Source: {chunk['source']} | "
+            f"Similarity: {chunk['score']:.3f}"
+        )
+        print(f"   {chunk['text'][:200]}...\n")
+
+    # Add retrieved context to the question before Phi-2 sees it.
+    rag_prompt = create_rag_prompt(
+        question=prompt,
+        retrieved_chunks=retrieved_chunks
+    )
+
+    # ------------------------
+    # original token count code
+    # ------------------------
+
+    input_ids = tokenizer.encode(
+        rag_prompt,
+        return_tensors="pt"
+    ).to(model.device)
+
+    input_token_count = input_ids.shape[1]
+
+    # ------------------------
+    # original generation code
+    # ------------------------
+
+    with torch.no_grad():
+        output_ids = model.generate(
+            input_ids,
+            max_new_tokens=100,
+            do_sample=True,
+            temperature=0.3,
+            top_p=0.9,
+            repetition_penalty=1.1,
+            pad_token_id=tokenizer.eos_token_id
+        )
+
+    # Extract generated tokens only
+    generated_ids = output_ids[0][input_token_count:]
+
+    response = tokenizer.decode(
+        generated_ids,
+        skip_special_tokens=True,
+        clean_up_tokenization_spaces=False
+    )
+
+    # Count output tokens
+    output_token_count = len(generated_ids)
+
+    # Total tokens
+    total_token_count = input_token_count + output_token_count
+
+    # ------------------------
+    # Display results
+    # ------------------------
+
+    print("Response:", response.strip())
+    print(f"Input Tokens:  {input_token_count}")
+    print(f"Output Tokens: {output_token_count}")
+    print(f"Total Tokens:  {total_token_count}")
+    print("-" * 60)
