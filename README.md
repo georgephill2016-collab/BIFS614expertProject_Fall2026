@@ -16,23 +16,6 @@ The system must be able to distinguish between these contexts and apply the appr
 This repository contains the course-content resources, preprocessing scripts, validation tools, and other development components used to build and test the BIFS 614 Expert System.
 
 ---
-## Setup and Running the Project
-
-To run the project, first make sure Python is installed on your computer. Clone or download the BIFS614expertProject_Fall2026 repository and open the project in an IDE such as PyCharm.
-
-1. Open a terminal in the root project directory and install the required Python packages:
-
-       pip install -r requirements.txt
-
-2. Run the build_index.py script to process knowledge.txt and create the knowledge.index and chunks.pkl files:
-
-       python scripts/build_index.py
-
-3. Once the index and chunk files have been created, run CourseAgentV6.py:
-
-       python LLMscript/CourseAgentV6.py
-
-After the models have loaded, you can enter questions related to the BIFS 614 course content. Enter "quit", "exit", or "q" to stop the program.
 
 ## Project Status
 
@@ -48,3 +31,24 @@ Additional functionality and testing will continue as the project progresses.
 
 ---
 
+---
+
+## Setup and Running the Current Project 
+
+To run the latest version of our project, first make sure Python is installed on your computer. Clone or download the BIFS614expertProject_Fall2026 repository and open the project in an IDE such as PyCharm.
+
+1. Open a terminal in the root project directory and install the required Python packages:
+
+       pip install -r requirements.txt
+
+2. Run the build_index.py script to process knowledge.txt and create the knowledge.index and chunks.pkl files:
+
+       python scripts/build_index.py
+
+3. Once the index and chunk files have been created, run CourseAgentV6.py:
+
+       python LLMscript/CourseAgentV6.py
+
+After the models have loaded, you can enter questions related to the BIFS 614 course content. Enter "quit", "exit", or "q" to stop the program.
+
+---
