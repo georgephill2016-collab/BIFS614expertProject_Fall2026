@@ -1,6 +1,6 @@
 # BIFS 614 Expert System
 
-**2026 Fall Project for BIOT 670I**
+**2026 Fall Project for BIOT 670I by Sara Drennan, George Hill, Michael Jersey, and Edward Matovu**
 
 ## Project Overview
 
