@@ -18,13 +18,21 @@ This repository contains the course-content resources, preprocessing scripts, va
 ---
 ## Setup and Running the Project
 
-To run the project, first install Python and an IDE such as PyCharm. Clone or download the `BIFS614expertProject_Fall2026` repository and open the project folder in PyCharm. Open a terminal in the root project directory and install the required Python packages using the included `requirements.txt` file:
+To run the project, first make sure Python is installed on your computer. Clone or download the BIFS614expertProject_Fall2026 repository and open the project in an IDE such as PyCharm.
 
-    pip install -r requirements.txt
+1. Open a terminal in the root project directory and install the required Python packages:
 
-From the root project directory, run `python scripts/build_index.py` to process `knowledge.txt` and generate the `knowledge.index` and `chunks.pkl` files required by the RAG system. Once the index and chunk files have been successfully created, run `python LLMscript/CourseAgentV6.py` to start the course assistant. After the language and embedding models have loaded, the user can enter questions related to the BIFS 614 course content. Enter `quit`, `exit`, or `q` to stop the program.
+       pip install -r requirements.txt
 
----
+2. Run the build_index.py script to process knowledge.txt and create the knowledge.index and chunks.pkl files:
+
+       python scripts/build_index.py
+
+3. Once the index and chunk files have been created, run CourseAgentV6.py:
+
+       python LLMscript/CourseAgentV6.py
+
+After the models have loaded, you can enter questions related to the BIFS 614 course content. Enter "quit", "exit", or "q" to stop the program.
 
 ## Project Status
 
