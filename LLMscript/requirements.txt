@@ -1,1 +1,10 @@
+# Python packages required to run the BIFS 614 LLM scripts.
+# Install all dependencies with:
+# pip install -r requirements.txt
 
+transformers
+sentence-transformers
+faiss-cpu
+bitsandbytes
+torch
+accelerate
