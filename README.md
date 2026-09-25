@@ -31,8 +31,6 @@ Additional functionality and testing will continue as the project progresses.
 
 ---
 
----
-
 ## Setup and Running the Current Project 
 
 To run the latest version of our project, first make sure Python is installed on your computer. Clone or download the BIFS614expertProject_Fall2026 repository and open the project in an IDE such as PyCharm.
